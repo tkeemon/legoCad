@@ -97,7 +97,11 @@ function fillScene() {
 	Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
 	
 
-	drawLego();
+	//var leg1 = drawLego(6,10,true);
+	//scene.add(leg1);
+
+	var groundPlane = drawLego(20,20,true);
+	scene.add(groundPlane);
 }
 
 /**
@@ -113,21 +117,18 @@ function fillScene() {
  * 
  * @return {[type]} [description]
  */
-function drawLego() {
-	var brickSizeX = 6;
-	var brickSizeY = 10;
-
+function drawLego(brickSizeX,brickSizeY,isThinPiece) {
+	//TODO: make lego brick into its own class
+	// var brickSizeX = 6;
+	// var brickSizeY = 10;
 
 	//CONSTANTS
 	var xUnitLength = 8; //length
 	var yUnitLength = 8; //width
-	var zUnitLength = 9.6; //height
+	var zUnitLength = isThinPiece ? 3.1 : 9.6; //height
 	var brickGap = 0.1; //between bricks
 	var knobRadius = 2.4;
 	var knobHeight = 1.8;
-
-	var xStep = xUnitLength+brickGap;
-	var yStep = yUnitLength+brickGap;
 
 	//calculated
 	var xLength = brickSizeX*xUnitLength + 2*brickGap;
@@ -161,13 +162,14 @@ function drawLego() {
 			var knobStartY = knobRadius+1.6;
 
 			//knob.position.set(knobStartX,knobStartY,0);
-			knob.position.set(knobStartX+xx*xStep,knobStartY+yy*yStep,(zLength+knobHeight)/2);
+			knob.position.set(knobStartX+xx*xUnitLength,knobStartY+yy*yUnitLength,(zLength+knobHeight)/2);
 			brick.add(knob);
 
 		}
 	}
 
-	scene.add(brick);
+	//scene.add(brick);
+	return brick;
 }
 
 //Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
