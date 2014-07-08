@@ -16,7 +16,7 @@ var cylinder, sphere, cube;
 var viewSize;
 var aspectRatio;
 
-var planeSize = 1000; //mm
+var planeSize = 100; //mm
 
 function init() {
 	var canvasWidth = window.innerWidth;
@@ -27,7 +27,7 @@ function init() {
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
 	renderer.setSize(canvasWidth, canvasHeight);
-	renderer.setClearColorHex( 0x808080, 1.0 );
+	renderer.setClearColor(0x808080,1.0);
 
 	var container = document.getElementById('container');
 	container.appendChild( renderer.domElement );
@@ -41,10 +41,12 @@ function init() {
 		-aspectRatio*viewSize / 2, aspectRatio*viewSize / 2,
 		viewSize / 2, -viewSize / 2,
 		-10000, 10000 );
-	camera.position.set( -890, 600, -480 );
-
+	camera.position.set( 890, 600, 480 );
+	camera.up.set(0,0,1);
 	// CONTROLS
-	cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement);
+	//cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement); //old
+	cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
+	
 	cameraControls.target.set(0,0,0);
 
 	fillScene();
@@ -80,7 +82,7 @@ function fillScene() {
 			// Units == 4 is a fixed amount to move back, and 4 is usually a good value
 			polygonOffset: true, polygonOffsetFactor: 1.0, polygonOffsetUnits: 4.0
 		}));
-	solidGround.rotation.x = -Math.PI / 2;
+	//solidGround.rotation.x = -Math.PI / 2;
 
 	scene.add( solidGround );
 
@@ -88,18 +90,42 @@ function fillScene() {
 	var ground = new THREE.Mesh(
 		new THREE.PlaneGeometry( planeSize, planeSize, 10, 10 ),
 		new THREE.MeshBasicMaterial( { color: 0x0, wireframe: true } ) );
-	ground.rotation.x = - Math.PI / 2;
+	//ground.rotation.x = - Math.PI / 2;
 
 	scene.add( ground );
-
+	
 	Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
 	
 
-
+	drawLego();
 }
 
+/**
+ * There are five basic dimensions:
+		The horizontal pitch, or distance between knobs:  8mm.
+		The vertical pitch, or height of a classic brick:  9.6mm.
+		The horizontal tolerance:  0.1mm
+		This is half the gap between bricks in the horizontal plane.  The horizontal tolerance prevents friction between bricks during building.
+			The knob diameter:  4.8mm
+		This is also the diameter of axles and holes.  Actually a knob must be slightly larger and an axle slightly smaller (4.85 and 4.75 respectively, otherwise axles would not turn in bearing holes and knobs would not stick in them) but we will ignore this difference here.
+			The height of a knob:  1.8mm
+ * [drawLego description]
+ * 
+ * @return {[type]} [description]
+ */
 function drawLego() {
-	
+	// var xLength = 4;
+	// var yLength = 8;
+	// var zLength = 40;
+
+	// var brickMaterial = new THREE.MeshPhongMaterial({color: 0xFF0000 })
+
+	// var brick = new THREE.Mesh(
+	// 	new THREE.BoxGeometry(xLength,yLength,zLength),
+	// 	brickMaterial
+	// 	);
+	// brick.position.y = 100;
+	// scene.add(brick);
 }
 
 //Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
@@ -136,7 +162,7 @@ function render() {
 function setupGui() {
 
 	effectController = {
-		height:900
+		height:250
 	};
 
 	var gui = new dat.GUI();
