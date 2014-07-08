@@ -130,14 +130,15 @@ function drawLego() {
 	var yStep = yUnitLength+brickGap;
 
 	//calculated
-	var xLength = brickSizeX*xUnitLength + (brickSizeX-1)*brickGap;
-	var yLength = brickSizeY*yUnitLength + (brickSizeY-1)*brickGap;
+	var xLength = brickSizeX*xUnitLength + 2*brickGap;
+	var yLength = brickSizeY*yUnitLength + 2*brickGap;
 	var zLength = zUnitLength;
 
 	var transX = xLength/2;
 	var transY = yLength/2;
 	var transZ = zLength/2;
 
+	//begin objects
 	var brickMaterial = new THREE.MeshPhongMaterial({color: 0xFF0000 })
 
 	var brick = new THREE.Object3D();
