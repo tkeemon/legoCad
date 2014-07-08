@@ -114,18 +114,27 @@ function fillScene() {
  * @return {[type]} [description]
  */
 function drawLego() {
-	// var xLength = 4;
-	// var yLength = 8;
-	// var zLength = 40;
+	var xLength = 8; //length
+	var yLength = 8; //width
+	var zLength = 9.6; //height
+	var knobRadius = 2.4;
+	var knobHeight = 1.8;
 
-	// var brickMaterial = new THREE.MeshPhongMaterial({color: 0xFF0000 })
+	var brickMaterial = new THREE.MeshPhongMaterial({color: 0xFF0000 })
 
-	// var brick = new THREE.Mesh(
-	// 	new THREE.BoxGeometry(xLength,yLength,zLength),
-	// 	brickMaterial
-	// 	);
-	// brick.position.y = 100;
-	// scene.add(brick);
+	var brick = new THREE.Mesh(
+		new THREE.BoxGeometry(xLength,yLength,zLength),
+		brickMaterial
+		);
+
+	var knob = new THREE.Mesh(
+		new THREE.CylinderGeometry(knobRadius,knobRadius, zLength+knobHeight, 10, 10, false),
+		brickMaterial
+		);
+	knob.rotation.x = Math.PI/2;
+	scene.add(knob);
+
+	scene.add(brick);
 }
 
 //Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
@@ -166,7 +175,7 @@ function setupGui() {
 	};
 
 	var gui = new dat.GUI();
-	gui.add(effectController, "height", 1, 8000).name("height");
+	gui.add(effectController, "height", 1, 300).name("height");
 }
 init();
 setupGui();
