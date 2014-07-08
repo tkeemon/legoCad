@@ -114,25 +114,57 @@ function fillScene() {
  * @return {[type]} [description]
  */
 function drawLego() {
-	var xLength = 8; //length
-	var yLength = 8; //width
-	var zLength = 9.6; //height
+	var brickSizeX = 6;
+	var brickSizeY = 10;
+
+
+	//CONSTANTS
+	var xUnitLength = 8; //length
+	var yUnitLength = 8; //width
+	var zUnitLength = 9.6; //height
+	var brickGap = 0.1; //between bricks
 	var knobRadius = 2.4;
 	var knobHeight = 1.8;
 
+	var xStep = xUnitLength+brickGap;
+	var yStep = yUnitLength+brickGap;
+
+	//calculated
+	var xLength = brickSizeX*xUnitLength + (brickSizeX-1)*brickGap;
+	var yLength = brickSizeY*yUnitLength + (brickSizeY-1)*brickGap;
+	var zLength = zUnitLength;
+
+	var transX = xLength/2;
+	var transY = yLength/2;
+	var transZ = zLength/2;
+
 	var brickMaterial = new THREE.MeshPhongMaterial({color: 0xFF0000 })
 
-	var brick = new THREE.Mesh(
+	var brick = new THREE.Object3D();
+
+	var base = new THREE.Mesh(
 		new THREE.BoxGeometry(xLength,yLength,zLength),
 		brickMaterial
 		);
+	base.position.set(transX,transY,transZ);
+	brick.add(base);
+	
+	for(var xx=0; xx<brickSizeX; xx++) {
+		for(var yy=0; yy<brickSizeY; yy++) {
+			var knob = new THREE.Mesh(
+				new THREE.CylinderGeometry(knobRadius,knobRadius, zLength+knobHeight, 10, 10, false),
+				brickMaterial
+				);
+			knob.rotation.x = Math.PI/2;
+			var knobStartX = knobRadius+1.6;
+			var knobStartY = knobRadius+1.6;
 
-	var knob = new THREE.Mesh(
-		new THREE.CylinderGeometry(knobRadius,knobRadius, zLength+knobHeight, 10, 10, false),
-		brickMaterial
-		);
-	knob.rotation.x = Math.PI/2;
-	scene.add(knob);
+			//knob.position.set(knobStartX,knobStartY,0);
+			knob.position.set(knobStartX+xx*xStep,knobStartY+yy*yStep,(zLength+knobHeight)/2);
+			brick.add(knob);
+
+		}
+	}
 
 	scene.add(brick);
 }
@@ -171,7 +203,7 @@ function render() {
 function setupGui() {
 
 	effectController = {
-		height:250
+		height:80
 	};
 
 	var gui = new dat.GUI();
