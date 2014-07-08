@@ -17,6 +17,7 @@ var viewSize;
 var aspectRatio;
 
 var planeSize = 100; //mm
+var groundPlaneSize = 20;
 
 function init() {
 	var canvasWidth = window.innerWidth;
@@ -41,13 +42,17 @@ function init() {
 		-aspectRatio*viewSize / 2, aspectRatio*viewSize / 2,
 		viewSize / 2, -viewSize / 2,
 		-10000, 10000 );
-	camera.position.set( 890, 600, 480 );
+
+	//(-449.13174881202895,-1029.086858129375,357.5586497691126)
+//	camera.position.set( -890, -600, 480 );
+	camera.position.set(-450,-1000,350);
 	camera.up.set(0,0,1);
 	// CONTROLS
 	//cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement); //old
 	cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
-	
-	cameraControls.target.set(0,0,0);
+
+	//cameraControls.target.set(0,0,0);	
+	cameraControls.target.set(80,80,0);
 
 	fillScene();
 }
@@ -73,6 +78,7 @@ function fillScene() {
 
 	// put grid lines every 10000/100 = 100 units
 
+/*
 	var solidGround = new THREE.Mesh(
 		new THREE.PlaneGeometry( planeSize, planeSize ),
 		new THREE.MeshPhongMaterial({ color: 0xFFFFFF,
@@ -93,14 +99,15 @@ function fillScene() {
 	//ground.rotation.x = - Math.PI / 2;
 
 	scene.add( ground );
-	
-	Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
+*/	
+	Coordinates.drawAllAxes({axisLength:100,axisRadius:1,axisTess:50});
 	
 
 	//var leg1 = drawLego(6,10,true);
 	//scene.add(leg1);
 
 	var groundPlane = drawLego(20,20,true);
+	groundPlane.position.z -= 3.1; //place top surface of brick at z=0
 	scene.add(groundPlane);
 }
 
@@ -170,6 +177,12 @@ function drawLego(brickSizeX,brickSizeY,isThinPiece) {
 
 	//scene.add(brick);
 	return brick;
+}
+
+function printCameraData() {
+	console.log("position(x,y,z)" + "(" + camera.position.x + "," + camera.position.y + "," + camera.position.z + ")");
+	console.log("targed: " + camera.target);
+	console.log("center: " + camera.center);
 }
 
 //Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
