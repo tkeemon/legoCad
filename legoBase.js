@@ -1,17 +1,9 @@
-////////////////////////////////////////////////////////////////////////////////
-// Orthographic camera demo
-////////////////////////////////////////////////////////////////////////////////
 
 /*global THREE, document, dat, window*/
 
 var camera, scene, renderer;
 var cameraControls, effectController;
 var clock = new THREE.Clock();
-
-var cylinder, sphere, cube;
-
-//var bevelRadius = 1.9;	// TODO: 2.0 causes some geometry bug.
-//var bevelRadius = 2.0;
 
 var viewSize;
 var aspectRatio;
@@ -43,15 +35,11 @@ function init() {
 		viewSize / 2, -viewSize / 2,
 		-10000, 10000 );
 
-	//(-449.13174881202895,-1029.086858129375,357.5586497691126)
-//	camera.position.set( -890, -600, 480 );
 	camera.position.set(-450,-1000,350);
 	camera.up.set(0,0,1);
 	// CONTROLS
-	//cameraControls = new THREE.OrbitAndPanControls(camera, renderer.domElement); //old
 	cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
 
-	//cameraControls.target.set(0,0,0);	
 	cameraControls.target.set(80,80,0);
 
 	fillScene();
@@ -75,43 +63,15 @@ function fillScene() {
 
 	///////////////////////
 	// GROUND
-
-	// put grid lines every 10000/100 = 100 units
-
-/*
-	var solidGround = new THREE.Mesh(
-		new THREE.PlaneGeometry( planeSize, planeSize ),
-		new THREE.MeshPhongMaterial({ color: 0xFFFFFF,
-			// polygonOffset moves the plane back from the eye a bit, so that the lines on top of
-			// the grid do not have z-fighting with the grid:
-			// Factor == 1 moves it back relative to the slope (more on-edge means move back farther)
-			// Units == 4 is a fixed amount to move back, and 4 is usually a good value
-			polygonOffset: true, polygonOffsetFactor: 1.0, polygonOffsetUnits: 4.0
-		}));
-	//solidGround.rotation.x = -Math.PI / 2;
-
-	scene.add( solidGround );
-
-
-	var ground = new THREE.Mesh(
-		new THREE.PlaneGeometry( planeSize, planeSize, 10, 10 ),
-		new THREE.MeshBasicMaterial( { color: 0x0, wireframe: true } ) );
-	//ground.rotation.x = - Math.PI / 2;
-
-	scene.add( ground );
-*/	
-	Coordinates.drawAllAxes({axisLength:100,axisRadius:1,axisTess:50});
-	
-
-	//var leg1 = drawLego(6,10,true);
-	//scene.add(leg1);
-
 	var groundPlane = drawLego(20,20,true);
 	groundPlane.position.z -= 3.1; //place top surface of brick at z=0
 	scene.add(groundPlane);
+
+	Coordinates.drawAllAxes({axisLength:100,axisRadius:1,axisTess:50});
 }
 
 /**
+ * taken from: http://www.robertcailliau.eu/Lego/Dimensions/zMeasurements-en.xhtml
  * There are five basic dimensions:
 		The horizontal pitch, or distance between knobs:  8mm.
 		The vertical pitch, or height of a classic brick:  9.6mm.
@@ -126,8 +86,6 @@ function fillScene() {
  */
 function drawLego(brickSizeX,brickSizeY,isThinPiece) {
 	//TODO: make lego brick into its own class
-	// var brickSizeX = 6;
-	// var brickSizeY = 10;
 
 	//CONSTANTS
 	var xUnitLength = 8; //length
@@ -168,14 +126,11 @@ function drawLego(brickSizeX,brickSizeY,isThinPiece) {
 			var knobStartX = knobRadius+1.6;
 			var knobStartY = knobRadius+1.6;
 
-			//knob.position.set(knobStartX,knobStartY,0);
 			knob.position.set(knobStartX+xx*xUnitLength,knobStartY+yy*yUnitLength,(zLength+knobHeight)/2);
 			brick.add(knob);
 
 		}
 	}
-
-	//scene.add(brick);
 	return brick;
 }
 
@@ -186,7 +141,7 @@ function printCameraData() {
 }
 
 //Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
-//COPIED
+//COPIED--- NOT USED
 function drawHelpers() {
 	Coordinates.drawGround({size:10000});
 	Coordinates.drawGrid({size:10000,scale:0.01});
