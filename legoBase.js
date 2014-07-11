@@ -160,7 +160,7 @@ function drawHelpers() {
 }
 
 function mouseDownPlaceBrick(event_info) {
-	if(!effectController.rotateCamera) {
+	if(effectController.placeBrick) {
 		event_info.preventDefault(); //doesnt prevent call to OrbitControls???
 		
 		var bx = Math.floor(effectController.brickSizeX);
@@ -207,8 +207,8 @@ function setupGui() {
 
 	effectController = {
 		height:80,
-		rotateCamera:true,
 
+		placeBrick:true,
 		brickSizeX:1,
 		brickSizeY:1,
 
@@ -218,11 +218,11 @@ function setupGui() {
 	var gui = new dat.GUI();
 	var f = gui.addFolder("Camera")
 	f.add(effectController, "height", 1, 300).name("height");
-	f.add(effectController, "rotateCamera").name("Rotate Camera");
 	f = gui.addFolder("BrickInfo");
 	f.add(effectController,"brickSizeX",1,10).name("brick size x");
 	f.add(effectController,"brickSizeY",1,10).name("brick size y");
 	f.add(effectController,"brickThin").name("Thin brick?");
+	f.add(effectController,"placeBrick").name("Place Brick");
 }
 init();
 setupGui();
