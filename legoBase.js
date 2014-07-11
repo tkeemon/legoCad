@@ -5,6 +5,8 @@ var camera, scene, renderer;
 var cameraControls, effectController;
 var clock = new THREE.Clock();
 
+var clickPlaceBrickControls;
+
 var viewSize;
 var aspectRatio;
 
@@ -42,6 +44,9 @@ function init() {
 
 	cameraControls.target.set(80,80,0);
 
+
+	//custom event listener
+	renderer.domElement.addEventListener('mousedown',mouseDownPlaceBrick);
 	fillScene();
 }
 
@@ -151,6 +156,12 @@ function drawHelpers() {
 	
 }
 
+function mouseDownPlaceBrick(event_info) {
+	if(!effectController.rotateCamera) {
+		console.log('test down');
+	}
+}
+
 function animate() {
 	window.requestAnimationFrame(animate);
 	render();
@@ -174,11 +185,13 @@ function render() {
 function setupGui() {
 
 	effectController = {
-		height:80
+		height:80,
+		rotateCamera:true
 	};
 
 	var gui = new dat.GUI();
 	gui.add(effectController, "height", 1, 300).name("height");
+	gui.add(effectController, "rotateCamera").name("Rotate Camera");
 }
 init();
 setupGui();
