@@ -3,6 +3,7 @@
 
 var camera, scene, renderer;
 var cameraControls, effectController;
+var projector;
 var clock = new THREE.Clock();
 
 var clickPlaceBrickControls;
@@ -13,9 +14,12 @@ var aspectRatio;
 var planeSize = 100; //mm
 var groundPlaneSize = 20;
 
+var canvasWidth = window.innerWidth;
+var canvasHeight = window.innerHeight;
+
+var bricks = []
+
 function init() {
-	var canvasWidth = window.innerWidth;
-	var canvasHeight = window.innerHeight;
 
 	// RENDERER
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -49,6 +53,8 @@ function init() {
 	renderer.domElement.addEventListener('mousedown',mouseDownPlaceBrick);
 	//renderer.domElement.addEventListener('mouseup',mouseUpPlaceBrick);
 	//renderer.domElement.addEventListener('mousemove',mouseMovePlaceBrick);
+
+	projector = new THREE.Projector();
 
 	fillScene();
 }
@@ -139,6 +145,8 @@ function drawLego(brickSizeX,brickSizeY,isThinPiece) {
 
 		}
 	}
+	bricks.push(brick);
+
 	return brick;
 }
 
@@ -159,14 +167,54 @@ function drawHelpers() {
 	
 }
 
-function mouseDownPlaceBrick(event_info) {
+//list bricks
+function listAllObjects() {
+	console.log('bricks:');
+	for(var x=0; x<bricks.length; x++) {
+		console.log(bricks[x]);
+	}
+}
+
+function mouseDownPlaceBrick(event) {
 	if(effectController.placeBrick) {
-		event_info.preventDefault(); //doesnt prevent call to OrbitControls???
+		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
+		console.log(event);
+
 		var bx = Math.floor(effectController.brickSizeX);
 		var by = Math.floor(effectController.brickSizeY);
-		leg = drawLego(bx,by,effectController.brickThin);
-		scene.add(leg);
+		
+		//listAllObjects();
+
+		//finding object intersection
+		var canvasPosition = renderer.domElement.getBoundingClientRect();
+		var mouseX = event.clientX - canvasPosition.left;
+		var mouseY = event.clientY - canvasPosition.top;
+		var mouseVector = new THREE.Vector3(2 * ( mouseX / canvasWidth ) - 1,
+											1 - 2 * ( mouseY / canvasHeight ));
+
+	// debug: console.log( "client Y " + event.clientY + ", mouse Y " + mouseY );
+
+		var raycaster = projector.pickingRay( mouseVector.clone(), camera );
+		// console.log(raycaster.ray.origin);
+		// console.log(raycaster.ray.direction);
+
+		var intersects = raycaster.intersectObjects( bricks,true );
+		// console.log('int');
+		// console.log(intersects);
+		// console.log(bricks.length);
+		if ( intersects.length > 0 ) {
+			//console.log('found obj: ' + intersects[0]);
+			var pos = intersects[0].object.position;
+
+			leg = drawLego(bx,by,effectController.brickThin);
+			// console.log(pos);
+
+			//TODO: need to translate into correct position
+			leg.position.set(pos.x,pos.y,pos.z);
+			scene.add(leg);
+		}
+	
 	}
 }
 
