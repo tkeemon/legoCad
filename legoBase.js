@@ -47,6 +47,9 @@ function init() {
 
 	//custom event listener
 	renderer.domElement.addEventListener('mousedown',mouseDownPlaceBrick);
+	//renderer.domElement.addEventListener('mouseup',mouseUpPlaceBrick);
+	//renderer.domElement.addEventListener('mousemove',mouseMovePlaceBrick);
+
 	fillScene();
 }
 
@@ -158,10 +161,25 @@ function drawHelpers() {
 
 function mouseDownPlaceBrick(event_info) {
 	if(!effectController.rotateCamera) {
-		console.log('test down');
+		event_info.preventDefault(); //doesnt prevent call to OrbitControls???
+		leg = drawLego(5,2,false);
+		scene.add(leg);
 	}
 }
 
+/*
+function mouseMovePlaceBrick( event_info ) {
+    if(!effectController.rotateCamera) {
+		event_info.preventDefault();
+	}
+}
+
+function mouseUpPlaceBrick( event_info ) {
+	if(!effectController.rotateCamera) {
+			event_info.preventDefault();
+		}    
+}
+*/
 function animate() {
 	window.requestAnimationFrame(animate);
 	render();
