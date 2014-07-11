@@ -162,7 +162,10 @@ function drawHelpers() {
 function mouseDownPlaceBrick(event_info) {
 	if(!effectController.rotateCamera) {
 		event_info.preventDefault(); //doesnt prevent call to OrbitControls???
-		leg = drawLego(5,2,false);
+		
+		var bx = Math.floor(effectController.brickSizeX);
+		var by = Math.floor(effectController.brickSizeY);
+		leg = drawLego(bx,by,effectController.brickThin);
 		scene.add(leg);
 	}
 }
@@ -204,12 +207,22 @@ function setupGui() {
 
 	effectController = {
 		height:80,
-		rotateCamera:true
+		rotateCamera:true,
+
+		brickSizeX:1,
+		brickSizeY:1,
+
+		brickThin:false,
 	};
 
 	var gui = new dat.GUI();
-	gui.add(effectController, "height", 1, 300).name("height");
-	gui.add(effectController, "rotateCamera").name("Rotate Camera");
+	var f = gui.addFolder("Camera")
+	f.add(effectController, "height", 1, 300).name("height");
+	f.add(effectController, "rotateCamera").name("Rotate Camera");
+	f = gui.addFolder("BrickInfo");
+	f.add(effectController,"brickSizeX",1,10).name("brick size x");
+	f.add(effectController,"brickSizeY",1,10).name("brick size y");
+	f.add(effectController,"brickThin").name("Thin brick?");
 }
 init();
 setupGui();
