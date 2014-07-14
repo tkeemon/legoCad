@@ -14,7 +14,13 @@
  * 
  * @return {[type]} [description]
  */
-LegoBrick = function ( brickSizeX,brickSizeY,isThinPiece ) {
+LegoBrick = function ( obj ) {
+	
+	//defaults
+	var brickSizeX = obj.brickSizeX|1
+	var brickSizeY = obj.brickSizeY|1
+	var isThinPiece = obj.isThinPiece|false
+
 	//CONSTANTS
 	var xUnitLength = 8; //length
 	var yUnitLength = 8; //width

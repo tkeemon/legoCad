@@ -77,7 +77,9 @@ function fillScene() {
 
 	///////////////////////
 	// GROUND
-	var groundPlane = new LegoBrick(20,20,true);
+	//var groundPlane = new LegoBrick(20,20,true);
+	var groundPlane = new LegoBrick({brickSizeX:20,brickSizeY:20,isThinPiece:true });
+
 	groundPlane.position.z -= 3.1; //place top surface of brick at z=0
 	scene.add(groundPlane);
 
@@ -141,7 +143,7 @@ function mouseDownPlaceBrick(event) {
 			//console.log('found obj: ' + intersects[0]);
 			var pos = intersects[0].object.position;
 
-			leg = new LegoBrick(bx,by,effectController.brickThin);
+			leg = new LegoBrick({brickSizeX:bx,brickSizeY:by,isThinPiece:effectController.brickThin});
 			// console.log(pos);
 
 			//TODO: need to translate into correct position
