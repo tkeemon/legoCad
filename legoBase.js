@@ -147,7 +147,9 @@ function mouseDownPlaceBrick(event) {
 			// console.log(pos);
 
 			//TODO: need to translate into correct position
-			leg.position.set(pos.x,pos.y,pos.z);
+			//offset is half x,y and full knob height from registered click
+			var offset = new THREE.Vector3(4,4,1.8);
+			leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
 			scene.add(leg);
 		}
 	
