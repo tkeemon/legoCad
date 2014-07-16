@@ -211,11 +211,23 @@ function setupGui() {
 	var f = gui.addFolder("Camera")
 	f.add(effectController, "height", 1, 300).name("height");
 	f = gui.addFolder("BrickInfo");
-	f.add(effectController,"brickSizeX",1,10).name("brick size x");
-	f.add(effectController,"brickSizeY",1,10).name("brick size y");
+	var bxControl = f.add(effectController,"brickSizeX",1,10).name("brick size x");
+	var byControl = f.add(effectController,"brickSizeY",1,10).name("brick size y");
 	f.addColor(effectController,"brickColor");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"placeBrick").name("Place Brick");
+
+	//set brick sizes to integer values
+	//	there's probably a better way of doing this, but this works for now
+	bxControl.onChange(function(value) {
+		effectController.brickSizeX = Math.floor(value);
+	});
+
+	byControl.onChange(function(value) {
+		effectController.brickSizeY = Math.floor(value);
+	});
+
+
 }
 init();
 setupGui();
