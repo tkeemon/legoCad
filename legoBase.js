@@ -143,7 +143,12 @@ function mouseDownPlaceBrick(event) {
 			//console.log('found obj: ' + intersects[0]);
 			var pos = intersects[0].object.position;
 
-			leg = new LegoBrick({brickSizeX:bx,brickSizeY:by,isThinPiece:effectController.brickThin});
+			var brickVals = {brickSizeX:bx,
+							 brickSizeY:by,
+							 isThinPiece:effectController.brickThin,
+							 brickColor:effectController.brickColor};
+			
+			leg = new LegoBrick(brickVals);
 			// console.log(pos);
 
 			//TODO: need to translate into correct position
@@ -199,6 +204,7 @@ function setupGui() {
 		brickSizeY:1,
 
 		brickThin:false,
+		brickColor:0x000000,
 	};
 
 	var gui = new dat.GUI();
@@ -207,6 +213,7 @@ function setupGui() {
 	f = gui.addFolder("BrickInfo");
 	f.add(effectController,"brickSizeX",1,10).name("brick size x");
 	f.add(effectController,"brickSizeY",1,10).name("brick size y");
+	f.addColor(effectController,"brickColor");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"placeBrick").name("Place Brick");
 }

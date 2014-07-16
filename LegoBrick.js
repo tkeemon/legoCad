@@ -17,9 +17,10 @@
 LegoBrick = function ( obj ) {
 	
 	//defaults
-	var brickSizeX = obj.brickSizeX|1
-	var brickSizeY = obj.brickSizeY|1
-	var isThinPiece = obj.isThinPiece|false
+	var brickSizeX = obj.brickSizeX|1;
+	var brickSizeY = obj.brickSizeY|1;
+	var isThinPiece = obj.isThinPiece|false;
+	var brickColor = obj.brickColor | 0xFF0000;
 
 	//CONSTANTS
 	var xUnitLength = 8; //length
@@ -39,7 +40,7 @@ LegoBrick = function ( obj ) {
 	var transZ = zLength/2;
 
 	//begin objects
-	var brickMaterial = new THREE.MeshPhongMaterial({color: 0xFF0000 })
+	var brickMaterial = new THREE.MeshPhongMaterial({color: brickColor })
 
 	var brick = new THREE.Object3D();
 
