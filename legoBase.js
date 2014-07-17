@@ -52,10 +52,8 @@ function init() {
 
 	//custom event listener
 	renderer.domElement.addEventListener('mousedown',mouseDownPlaceBrick);
-	//renderer.domElement.addEventListener('mouseup',mouseUpPlaceBrick);
-	
-	//renderer.domElement.addEventListener('mousemove',mouseDownPlaceBrick);
-	//renderer.domElement.addEventListener('mousemove',mouseMovePlaceBrick);
+	//renderer.domElement.addEventListener('mouseup',mouseUpPlaceBrick);	
+	// renderer.domElement.addEventListener('mousemove',mouseMovePlaceBrick);
 
 	projector = new THREE.Projector();
 
@@ -137,12 +135,16 @@ function findIntersectingBrick(mx,my) {
 	// console.log(raycaster.ray.direction);
 
 	var intersects = raycaster.intersectObjects( bricks,true );
-	console.log('int');
-	console.log(intersects.length);
+	console.log('int with: ' + intersects.length + ' bricks');
+	console.log('first: ');
+	console.log(intersects[0]);
+	// console.log(intersects.length);
 	// console.log(bricks.length);
 	if ( intersects.length > 0 ) {
 		//console.log('found obj: ' + intersects[0]);
 		// var pos = intersects[0].object.position;
+		console.log('pos from int: ');
+		console.log(intersects[0].object.position);
 		return intersects[0].object.position;
 	}
 	return undefined;
@@ -185,29 +187,56 @@ function mouseDownPlaceBrick(event) {
 	}
 }
 
-/*
+
 function mouseMovePlaceBrick( event ) {
+    while(tempBricks.length > 0) {
+    	var b= tempBricks.pop();	
+    	scene.remove(b);
+    }
+
     if(!effectController.rotateCamera) {
 		event.preventDefault();
 
+		if(effectController.placeBrick) {
+		event.preventDefault(); //doesnt prevent call to OrbitControls???
+		
+		console.log(event);
+
 		var bx = Math.floor(effectController.brickSizeX);
 		var by = Math.floor(effectController.brickSizeY);
-		var pos = new THREE.Vector3(event.clientX,event.clientY,0);
+		
+		//listAllObjects();
 
-		var brickVals = {	brickSizeX:bx,
-							brickSizeY:by,
-							isThinPiece:effectController.brickThin,
-							brickColor:effectController.brickColor,
-							brickOpacity:.5};
+		var pos = findIntersectingBrick(event.clientX,event.clientY);
+		
+		//if no intersection found
+		if(!pos)
+			return;
+
+		var brickVals = {brickSizeX:bx,
+						 brickSizeY:by,
+						 isThinPiece:effectController.brickThin,
+						 brickColor:effectController.brickColor,
+						 brickOpacity:.5};
+		
 		var leg = new LegoBrick(brickVals);
+		console.log("placing brick at:")
+		console.log(pos);
 
+		//TODO: need to translate into correct position
+		//offset is half x,y and full knob height from registered click
 		var offset = new THREE.Vector3(4,4,1.8);
 		leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
+		
+		tempBricks.push(leg);
 		scene.add(leg);
+	
+	
+	}
 
 	}
 }
-*/
+
 /*
 function mouseUpPlaceBrick( event_info ) {
 	if(!effectController.rotateCamera) {
