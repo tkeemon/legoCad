@@ -22,6 +22,7 @@ LegoBrick = function ( obj ) {
 	var isThinPiece = obj.isThinPiece || false;
 	var brickColor = obj.brickColor || 0xFF0000;
 	var brickOpacity = obj.brickOpacity || 1;
+	var brickRotation = obj.brickRotation || 0;
 
 	//CONSTANTS
 	var xUnitLength = 8; //length
@@ -72,6 +73,8 @@ LegoBrick = function ( obj ) {
 		brick,
 		brickMaterial
 		);
+	//TODO - need to translate into correct position for rotation around correct location
+	brickMesh.rotation.z = brickRotation*Math.PI/180;
 	bricks.push(brickMesh);
 	return brickMesh;
 

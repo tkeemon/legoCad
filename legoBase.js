@@ -169,7 +169,9 @@ function mouseDownPlaceBrick(event) {
 		var brickVals = {brickSizeX:bx,
 						 brickSizeY:by,
 						 isThinPiece:effectController.brickThin,
-						 brickColor:effectController.brickColor};
+						 brickColor:effectController.brickColor,
+						 brickRotation:effectController.brickRotation,
+						};
 		
 		var leg = new LegoBrick(brickVals);
 		console.log("placing brick at:")
@@ -246,6 +248,7 @@ function setupGui() {
 
 		brickThin:false,
 		brickColor:0x000000,
+		brickRotation:0,
 	};
 
 	var gui = new dat.GUI();
@@ -254,6 +257,7 @@ function setupGui() {
 	f = gui.addFolder("BrickInfo");
 	f.add(effectController,"brickSizeX",1,10).step(1).name("brick length");
 	f.add(effectController,"brickSizeY",1,10).step(1).name("brick width");
+	f.add(effectController,'brickRotation',0,270).step(90).name("brick rotation");
 	f.addColor(effectController,"brickColor");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"placeBrick").name("Place Brick");
