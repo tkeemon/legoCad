@@ -17,7 +17,8 @@ var groundPlaneSize = 20;
 var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
 
-var bricks = []
+var bricks = [];
+var tempBricks = [];
 
 function init() {
 
@@ -52,6 +53,8 @@ function init() {
 	//custom event listener
 	renderer.domElement.addEventListener('mousedown',mouseDownPlaceBrick);
 	//renderer.domElement.addEventListener('mouseup',mouseUpPlaceBrick);
+	
+	//renderer.domElement.addEventListener('mousemove',mouseDownPlaceBrick);
 	//renderer.domElement.addEventListener('mousemove',mouseMovePlaceBrick);
 
 	projector = new THREE.Projector();
@@ -94,6 +97,7 @@ function printCameraData() {
 
 //Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
 //COPIED--- NOT USED
+/*
 function drawHelpers() {
 	Coordinates.drawGround({size:10000});
 	Coordinates.drawGrid({size:10000,scale:0.01});
@@ -102,6 +106,7 @@ function drawHelpers() {
 	Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
 	
 }
+*/
 
 //list bricks
 function listAllObjects() {
@@ -110,6 +115,39 @@ function listAllObjects() {
 		console.log(bricks[x]);
 	}
 }
+
+/**
+ * return position of lego brick intersected
+ * @param  {[type]} mx - mouseX from event 
+ * @param  {[type]} my - mouseY from event
+ * @return {[type]}    [description]
+ */
+function findIntersectingBrick(mx,my) {
+	//finding object intersection
+	var canvasPosition = renderer.domElement.getBoundingClientRect();
+	var mouseX = mx - canvasPosition.left;
+	var mouseY = my - canvasPosition.top;
+	var mouseVector = new THREE.Vector3(2 * ( mouseX / canvasWidth ) - 1,
+										1 - 2 * ( mouseY / canvasHeight ));
+
+	// debug: console.log( "client Y " + event.clientY + ", mouse Y " + mouseY );
+
+	var raycaster = projector.pickingRay( mouseVector.clone(), camera );
+	// console.log(raycaster.ray.origin);
+	// console.log(raycaster.ray.direction);
+
+	var intersects = raycaster.intersectObjects( bricks,true );
+	console.log('int');
+	console.log(intersects.length);
+	// console.log(bricks.length);
+	if ( intersects.length > 0 ) {
+		//console.log('found obj: ' + intersects[0]);
+		// var pos = intersects[0].object.position;
+		return intersects[0].object.position;
+	}
+	return undefined;
+}
+
 
 function mouseDownPlaceBrick(event) {
 	if(effectController.placeBrick) {
@@ -122,52 +160,55 @@ function mouseDownPlaceBrick(event) {
 		
 		//listAllObjects();
 
-		//finding object intersection
-		var canvasPosition = renderer.domElement.getBoundingClientRect();
-		var mouseX = event.clientX - canvasPosition.left;
-		var mouseY = event.clientY - canvasPosition.top;
-		var mouseVector = new THREE.Vector3(2 * ( mouseX / canvasWidth ) - 1,
-											1 - 2 * ( mouseY / canvasHeight ));
+		var pos = findIntersectingBrick(event.clientX,event.clientY);
+		
+		//if no intersection found
+		if(!pos)
+			return;
 
-	// debug: console.log( "client Y " + event.clientY + ", mouse Y " + mouseY );
+		var brickVals = {brickSizeX:bx,
+						 brickSizeY:by,
+						 isThinPiece:effectController.brickThin,
+						 brickColor:effectController.brickColor};
+		
+		var leg = new LegoBrick(brickVals);
+		console.log("placing brick at:")
+		console.log(pos);
 
-		var raycaster = projector.pickingRay( mouseVector.clone(), camera );
-		// console.log(raycaster.ray.origin);
-		// console.log(raycaster.ray.direction);
-
-		var intersects = raycaster.intersectObjects( bricks,true );
-		// console.log('int');
-		// console.log(intersects);
-		// console.log(bricks.length);
-		if ( intersects.length > 0 ) {
-			//console.log('found obj: ' + intersects[0]);
-			var pos = intersects[0].object.position;
-
-			var brickVals = {brickSizeX:bx,
-							 brickSizeY:by,
-							 isThinPiece:effectController.brickThin,
-							 brickColor:effectController.brickColor};
-			
-			leg = new LegoBrick(brickVals);
-			// console.log(pos);
-
-			//TODO: need to translate into correct position
-			//offset is half x,y and full knob height from registered click
-			var offset = new THREE.Vector3(4,4,1.8);
-			leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
-			scene.add(leg);
-		}
+		//TODO: need to translate into correct position
+		//offset is half x,y and full knob height from registered click
+		var offset = new THREE.Vector3(4,4,1.8);
+		leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
+		scene.add(leg);
+	
 	
 	}
 }
 
 /*
-function mouseMovePlaceBrick( event_info ) {
+function mouseMovePlaceBrick( event ) {
     if(!effectController.rotateCamera) {
-		event_info.preventDefault();
+		event.preventDefault();
+
+		var bx = Math.floor(effectController.brickSizeX);
+		var by = Math.floor(effectController.brickSizeY);
+		var pos = new THREE.Vector3(event.clientX,event.clientY,0);
+
+		var brickVals = {	brickSizeX:bx,
+							brickSizeY:by,
+							isThinPiece:effectController.brickThin,
+							brickColor:effectController.brickColor,
+							brickOpacity:.5};
+		var leg = new LegoBrick(brickVals);
+
+		var offset = new THREE.Vector3(4,4,1.8);
+		leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
+		scene.add(leg);
+
 	}
 }
-
+*/
+/*
 function mouseUpPlaceBrick( event_info ) {
 	if(!effectController.rotateCamera) {
 			event_info.preventDefault();
