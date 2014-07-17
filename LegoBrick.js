@@ -43,33 +43,37 @@ LegoBrick = function ( obj ) {
 	//begin objects
 	var brickMaterial = new THREE.MeshPhongMaterial({color: brickColor, transparent:true, opacity:brickOpacity })
 
-	var brick = new THREE.Object3D();
+	var brick = new THREE.Geometry();
+	var transMat = new THREE.Matrix4();
 
-	var base = new THREE.Mesh(
-		new THREE.BoxGeometry(xLength,yLength,zLength),
-		brickMaterial
-		);
-	base.position.set(transX,transY,transZ);
-	brick.add(base);
+	var base = new THREE.BoxGeometry(xLength,yLength,zLength);
+
+	transMat.setPosition(new THREE.Vector3(transX,transY,transZ));
+	console.log(transMat);
+	
+	brick.merge(base,transMat);
+	
 	
 	for(var xx=0; xx<brickSizeX; xx++) {
 		for(var yy=0; yy<brickSizeY; yy++) {
-			var knob = new THREE.Mesh(
-				new THREE.CylinderGeometry(knobRadius,knobRadius, zLength+knobHeight, 10, 10, false),
-				brickMaterial
-				);
-			knob.rotation.x = Math.PI/2;
+			var knob = new THREE.CylinderGeometry(knobRadius,knobRadius, zLength+knobHeight, 10, 10, false);
+			
+			// transMat.identity(); //needed???
+			transMat.makeRotationX(Math.PI/2);
 			var knobStartX = knobRadius+1.6;
 			var knobStartY = knobRadius+1.6;
 
-			knob.position.set(knobStartX+xx*xUnitLength,knobStartY+yy*yUnitLength,(zLength+knobHeight)/2);
-			brick.add(knob);
+			transMat.setPosition(new THREE.Vector3(knobStartX+xx*xUnitLength,knobStartY+yy*yUnitLength,(zLength+knobHeight)/2));
+			brick.merge(knob,transMat);
 
 		}
 	}
-	bricks.push(brick);
-
-	return brick;
+	var brickMesh = new THREE.Mesh(
+		brick,
+		brickMaterial
+		);
+	bricks.push(brickMesh);
+	return brickMesh;
 
 };
 	
