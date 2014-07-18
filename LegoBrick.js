@@ -50,10 +50,7 @@ LegoBrick = function ( obj ) {
 	var base = new THREE.BoxGeometry(xLength,yLength,zLength);
 
 	transMat.setPosition(new THREE.Vector3(transX,transY,transZ));
-	console.log(transMat);
-	
 	brick.merge(base,transMat);
-	
 	
 	for(var xx=0; xx<brickSizeX; xx++) {
 		for(var yy=0; yy<brickSizeY; yy++) {
