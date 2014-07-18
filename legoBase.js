@@ -55,7 +55,7 @@ function init() {
 	//renderer.domElement.addEventListener('mouseup',mouseUpPlaceBrick);
 	
 	//renderer.domElement.addEventListener('mousemove',mouseDownPlaceBrick);
-	//renderer.domElement.addEventListener('mousemove',mouseMovePlaceBrick);
+	renderer.domElement.addEventListener('mousemove',mouseMovePlaceBrick);
 
 	projector = new THREE.Projector();
 
@@ -85,6 +85,7 @@ function fillScene() {
 
 	groundPlane.position.z -= 3.1; //place top surface of brick at z=0
 	scene.add(groundPlane);
+	bricks.push(groundPlane);
 
 	Coordinates.drawAllAxes({axisLength:100,axisRadius:1,axisTess:50});
 }
@@ -213,33 +214,58 @@ function mouseDownPlaceBrick(event) {
 		leg.position.set(pos.x,pos.y,pos.z);
 		scene.add(leg);
 	
-	
+		bricks.push(leg);
 	}
 }
 
-/*
 function mouseMovePlaceBrick( event ) {
-    if(!effectController.rotateCamera) {
-		event.preventDefault();
+	while(tempBricks.length > 0) {
+		var b = tempBricks.pop();
+		scene.remove(b);
+	}
+
+    if(effectController.placeBrick) {
+		event.preventDefault(); //doesnt prevent call to OrbitControls???
+		
+		//console.log(event);
 
 		var bx = Math.floor(effectController.brickSizeX);
 		var by = Math.floor(effectController.brickSizeY);
-		var pos = new THREE.Vector3(event.clientX,event.clientY,0);
+		
+		//listAllObjects();
 
-		var brickVals = {	brickSizeX:bx,
-							brickSizeY:by,
-							isThinPiece:effectController.brickThin,
-							brickColor:effectController.brickColor,
-							brickOpacity:.5};
+		var intersection = findIntersectingBrick(event.clientX,event.clientY);
+		//if no intersection found
+		if(!intersection)
+			return;
+		
+		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
+		if(!pos)
+			return;
+
+		var brickVals = {brickSizeX:bx,
+						 brickSizeY:by,
+						 isThinPiece:effectController.brickThin,
+						 brickColor:effectController.brickColor,
+						 brickRotation:effectController.brickRotation,
+						 brickOpacity: .5,
+						};
+		
 		var leg = new LegoBrick(brickVals);
+		// console.log("placing brick at:")
+		// console.log(pos);
 
+		//TODO: need to translate into correct position
+		//offset is half x,y and full knob height from registered click
 		var offset = new THREE.Vector3(4,4,1.8);
-		leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
+		//leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
+		leg.position.set(pos.x,pos.y,pos.z);
 		scene.add(leg);
-
+	
+		tempBricks.push(leg);
 	}
 }
-*/
+
 /*
 function mouseUpPlaceBrick( event_info ) {
 	if(!effectController.rotateCamera) {

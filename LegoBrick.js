@@ -72,7 +72,7 @@ LegoBrick = function ( obj ) {
 		);
 	//TODO - need to translate into correct position for rotation around correct location
 	brickMesh.rotation.z = brickRotation*Math.PI/180;
-	bricks.push(brickMesh);
+	//bricks.push(brickMesh);
 	return brickMesh;
 
 };
