@@ -81,8 +81,10 @@ function fillScene() {
 	///////////////////////
 	// GROUND
 	//var groundPlane = new LegoBrick(20,20,true);
-	var groundPlane = new LegoBrick({brickSizeX:20,brickSizeY:20,isThinPiece:true });
+	var groundPlaneGeometry = new THREE.LegoBrick({unitsLength:20,unitsWidth:20,isThinPiece:true });
 
+	var groundPlane = new THREE.Mesh(groundPlaneGeometry,
+								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true }));
 	groundPlane.position.z -= 3.1; //place top surface of brick at z=0
 	scene.add(groundPlane);
 	bricks.push(groundPlane);
@@ -196,16 +198,18 @@ function mouseDownPlaceBrick(event) {
 		if(!pos)
 			return;
 
-		var brickVals = {brickSizeX:bx,
-						 brickSizeY:by,
+		var brickVals = {unitsLength:bx,
+						 unitsWidth:by,
 						 isThinPiece:effectController.brickThin,
 						 brickColor:effectController.brickColor,
 						 brickRotation:effectController.brickRotation,
 						};
 		
-		var leg = new LegoBrick(brickVals);
+		var brickGeometry = new THREE.LegoBrick(brickVals);
 		// console.log("placing brick at:")
 		// console.log(pos);
+		var leg = new THREE.Mesh(brickGeometry,
+						new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:false }));
 
 		//TODO: need to translate into correct position
 		//offset is half x,y and full knob height from registered click
@@ -243,22 +247,23 @@ function mouseMovePlaceBrick( event ) {
 		if(!pos)
 			return;
 
-		var brickVals = {brickSizeX:bx,
-						 brickSizeY:by,
+		var brickVals = {unitsLength:bx,
+						 unitsWidth:by,
 						 isThinPiece:effectController.brickThin,
 						 brickColor:effectController.brickColor,
 						 brickRotation:effectController.brickRotation,
-						 brickOpacity: .5,
+						 //brickOpacity: .5,
 						};
 		
-		var leg = new LegoBrick(brickVals);
+		var brickGeometry = new THREE.LegoBrick(brickVals);
 		// console.log("placing brick at:")
 		// console.log(pos);
-
+		var leg = new THREE.Mesh(brickGeometry,
+						new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:true, opacity: .5 }));
 		//TODO: need to translate into correct position
 		//offset is half x,y and full knob height from registered click
 		var offset = new THREE.Vector3(4,4,1.8);
-		//leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
+		
 		leg.position.set(pos.x,pos.y,pos.z);
 		scene.add(leg);
 	
@@ -303,7 +308,7 @@ function setupGui() {
 		brickSizeY:1,
 
 		brickThin:false,
-		brickColor:0x000000,
+		brickColor:0x0000FF,
 		brickRotation:0,
 	};
 

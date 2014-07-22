@@ -14,58 +14,67 @@
  * 
  * @return {[type]} [description]
  */
-LegoBrick = function ( obj ) {
+THREE.LegoBrick = function ( obj ) {
+	"use strict";
+
+	THREE.Geometry.call( this );
+
+	var scope = this;
+	var brick = this;
 	
 	//defaults
-	var brickSizeX = obj.brickSizeX || 1;
-	var brickSizeY = obj.brickSizeY || 1;
-	var isThinPiece = obj.isThinPiece || false;
-	var brickColor = obj.brickColor || 0xFF0000;
-	var brickOpacity = obj.brickOpacity || 1;
-	var brickRotation = obj.brickRotation || 0;
-
+	this.unitsLength = obj.unitsLength || 1;
+	this.unitsWidth = obj.unitsWidth || 1;
+	this.isThinPiece = obj.isThinPiece || false;
+	//var brickColor = obj.brickColor || 0xFF0000;
+	//var brickOpacity = obj.brickOpacity || 1;
+	this.brickRotation = obj.brickRotation || 0;
 	//CONSTANTS
-	var xUnitLength = 8; //length
-	var yUnitLength = 8; //width
-	var zUnitLength = isThinPiece ? 3.1 : 9.6; //height
+	var legoUnitLength = 8; 
+	var zUnitLength = this.isThinPiece ? 3.1 : 9.6; //height
 	var brickGap = 0.1; //between bricks
 	var knobRadius = 2.4;
 	var knobHeight = 1.8;
 
-	//calculated
-	var xLength = brickSizeX*xUnitLength + 2*brickGap;
-	var yLength = brickSizeY*yUnitLength + 2*brickGap;
-	var zLength = zUnitLength;
 
-	var transX = xLength/2;
-	var transY = yLength/2;
-	var transZ = zLength/2;
+	//calculated
+	this.length = this.unitsLength*legoUnitLength + 2*brickGap;
+	this.width = this.unitsWidth*legoUnitLength + 2*brickGap;
+	this.depth = zUnitLength;
+
+	this.height = this.width; //not sure if THREE.js uses height for anything
+
+	var transX = this.length/2;
+	var transY = this.width/2;
+	var transZ = this.depth/2;
 
 	//begin objects
-	var brickMaterial = new THREE.MeshPhongMaterial({color: brickColor, transparent:true, opacity:brickOpacity })
+	//var brickMaterial = new THREE.MeshPhongMaterial({color: brickColor, transparent:true, opacity:brickOpacity })
 
-	var brick = new THREE.Geometry();
+	//var brick = new THREE.Geometry();
 	var transMat = new THREE.Matrix4();
 
-	var base = new THREE.BoxGeometry(xLength,yLength,zLength);
+	var base = new THREE.BoxGeometry(this.length,this.width,this.depth);
 
 	transMat.setPosition(new THREE.Vector3(transX,transY,transZ));
 	brick.merge(base,transMat);
 	
-	for(var xx=0; xx<brickSizeX; xx++) {
-		for(var yy=0; yy<brickSizeY; yy++) {
-			var knob = new THREE.CylinderGeometry(knobRadius,knobRadius, zLength+knobHeight, 10, 10, false);
+	for(var xx=0; xx<this.unitsLength; xx++) {
+		for(var yy=0; yy<this.unitsWidth; yy++) {
+			var knob = new THREE.CylinderGeometry(knobRadius,knobRadius, this.depth+knobHeight, 10, 10, false);
 			
 			// transMat.identity(); //needed???
 			transMat.makeRotationX(Math.PI/2);
 			var knobStartX = knobRadius+1.6;
 			var knobStartY = knobRadius+1.6;
 
-			transMat.setPosition(new THREE.Vector3(knobStartX+xx*xUnitLength,knobStartY+yy*yUnitLength,(zLength+knobHeight)/2));
+			transMat.setPosition(new THREE.Vector3(knobStartX+xx*legoUnitLength,knobStartY+yy*legoUnitLength,(this.depth+knobHeight)/2));
 			brick.merge(knob,transMat);
 
 		}
 	}
+
+/*
 	var brickMesh = new THREE.Mesh(
 		brick,
 		brickMaterial
@@ -74,6 +83,11 @@ LegoBrick = function ( obj ) {
 	brickMesh.rotation.z = brickRotation*Math.PI/180;
 	//bricks.push(brickMesh);
 	return brickMesh;
+*/
 
+	// this.computeCentroids();
+	// this.computeFaceNormals();
+	// this.mergeVertices();
 };
-	
+
+THREE.LegoBrick.prototype = Object.create( THREE.Geometry.prototype );
