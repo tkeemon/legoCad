@@ -46,9 +46,7 @@ function init() {
 	camera.up.set(0,0,1);
 	// CONTROLS
 	cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
-
 	cameraControls.target.set(80,80,0);
-
 
 	//custom event listener
 	renderer.domElement.addEventListener('mousedown',mouseDownPlaceBrick);
@@ -312,6 +310,9 @@ function setupGui() {
 		brickRotation:0,
 	};
 
+	//either place brick or enable moving camera
+	cameraControls.enabled = !effectController.placeBrick; 
+
 	var gui = new dat.GUI();
 	var f = gui.addFolder("Camera")
 	f.add(effectController, "height", 1, 300).name("height");
@@ -321,7 +322,13 @@ function setupGui() {
 	f.add(effectController,'brickRotation',0,270).step(90).name("brick rotation");
 	f.addColor(effectController,"brickColor");
 	f.add(effectController,"brickThin").name("Thin brick?");
-	f.add(effectController,"placeBrick").name("Place Brick");
+	var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
+
+	placeBrickHandle.onChange(function(value) {
+		// enable/disable cameraControls
+		cameraControls.enabled = !value;
+	});
+
 
 }
 init();
