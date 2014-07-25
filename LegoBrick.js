@@ -87,7 +87,7 @@ THREE.LegoBrick = function ( obj ) {
 
 	// this.computeCentroids();
 	// this.computeFaceNormals();
-	// this.mergeVertices();
+	this.mergeVertices();
 };
 
 THREE.LegoBrick.prototype = Object.create( THREE.Geometry.prototype );

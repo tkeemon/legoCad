@@ -170,7 +170,8 @@ function calculateClosestBrickPosition(brick,vec) {
 	//		transMat.setPosition(new THREE.Vector3(knobStartX+xx*xUnitLength,knobStartY+yy*yUnitLength,(zLength+knobHeight)/2));
 	//TODO: set appropriate z component
 	var pos = new THREE.Vector3(xBlockNum*legoUnitSize,yBlockNum*legoUnitSize,0);
-
+	pos.add(brick.position);
+	pos.z += brick.geometry.depth;
 	//readjust for parent brick offset
 	return pos;
 }
@@ -211,7 +212,7 @@ function mouseDownPlaceBrick(event) {
 
 		//TODO: need to translate into correct position
 		//offset is half x,y and full knob height from registered click
-		var offset = new THREE.Vector3(4,4,1.8);
+		//var offset = new THREE.Vector3(4,4,1.8);
 		//leg.position.set(pos.x-offset.x,pos.y-offset.y,pos.z-offset.z);
 		leg.position.set(pos.x,pos.y,pos.z);
 		scene.add(leg);
