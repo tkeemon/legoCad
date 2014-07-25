@@ -31,7 +31,7 @@ THREE.LegoBrick = function ( obj ) {
 	this.brickRotation = obj.brickRotation || 0;
 	//CONSTANTS
 	var legoUnitLength = 8; 
-	var zUnitLength = this.isThinPiece ? 3.1 : 9.6; //height
+	var zUnitLength = this.isThinPiece ? 3.2 : 9.6; //height
 	var brickGap = 0.1; //between bricks
 	var knobRadius = 2.4;
 	var knobHeight = 1.8;
