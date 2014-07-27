@@ -20,6 +20,8 @@ var canvasHeight = window.innerHeight;
 var bricks = [];
 var tempBricks = [];
 
+var cube;
+
 function init() {
 
 	// RENDERER
@@ -46,7 +48,8 @@ function init() {
 	camera.up.set(0,0,1);
 	// CONTROLS
 	cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
-	cameraControls.target.set(80,80,0);
+	// cameraControls.target.set(80,80,0);
+	cameraControls.target.set(0,0,0);
 
 	//custom event listener
 	renderer.domElement.addEventListener('mousedown',mouseDownPlaceBrick);
@@ -59,6 +62,8 @@ function init() {
 
 	fillScene();
 }
+
+var rtMat,trMat;
 
 function fillScene() {
 	scene = new THREE.Scene();
@@ -76,6 +81,51 @@ function fillScene() {
 
 	scene.add( light );
 
+	var sphere = new THREE.Mesh(new THREE.SphereGeometry(1,1),
+					new THREE.MeshPhongMaterial({color: 0xFF0000})
+			);
+	scene.add(sphere);
+
+	cube = new THREE.Mesh(new THREE.BoxGeometry(1,5,10),
+					new THREE.MeshPhongMaterial({color: 0x0000FF})		
+			);
+	// var geometry = cube.geometry;
+	// geometry.verticesNeedUpdate = true;
+	// geometry.elementsNeedUpdate = true;
+	// geometry.morphTargetsNeedUpdate = true;
+	// geometry.uvsNeedUpdate = true;
+	// geometry.normalsNeedUpdate = true;
+	// geometry.colorsNeedUpdate = true;
+	// geometry.tangentsNeedUpdate = true;
+
+	var rMat = new THREE.Matrix4().makeRotationX(Math.PI/2);
+	var tMat = new THREE.Matrix4().makeTranslation(10,20,30);
+	
+	rtMat = new THREE.Matrix4().multiplyMatrices(rMat,tMat);
+	trMat = new THREE.Matrix4().multiplyMatrices(tMat,rMat);
+
+
+	// // STEPS TO CORRECTLY SET OBJECT'S MATRIX
+	// cube.matrixAutoUpdate = false;
+	// // cube.matrix.copy(rtMat); //custom matrix
+	// cube.matrix.copy(trMat);
+	// cube.matrixWorldNeedsUpdate = true;	
+
+	// cube.matrix.set(m[0],m[1],m[2],m[3],m[4],m[5],m[6],m[7],m[8],m[9],m[10],m[11],m[12],m[13],m[14],m[15])
+
+	cube.translateX(10);
+	cube.translateY(20);
+	cube.translateZ(30);
+	cube.rotateX(Math.PI/2);
+
+
+	// cube.updateMatrix();
+	// cube.matrixWorldNeedsUpdate = true;
+
+
+	scene.add(cube);
+	// cube.matrixAutoUpdate = false;
+
 	///////////////////////
 	// GROUND
 	//var groundPlane = new LegoBrick(20,20,true);
@@ -87,7 +137,7 @@ function fillScene() {
 	scene.add(groundPlane);
 	bricks.push(groundPlane);
 
-	Coordinates.drawAllAxes({axisLength:100,axisRadius:1,axisTess:50});
+	// Coordinates.drawAllAxes({axisLength:100,axisRadius:1,axisTess:50});
 }
 
 function printCameraData() {
@@ -302,7 +352,7 @@ function setupGui() {
 	effectController = {
 		height:80,
 
-		placeBrick:true,
+		placeBrick:false,
 		brickSizeX:1,
 		brickSizeY:1,
 
