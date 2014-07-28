@@ -176,6 +176,44 @@ function calculateClosestBrickPosition(brick,vec) {
 	return pos;
 }
 
+function calculateBrickMatrix(brickPosition) {
+	// var mat = leg.matrix.clone();
+		
+		//LEFT MULT - forward
+		// var mat = new THREE.Matrix4();
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(4,4,0));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(-4,-4,0));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(pos.x,pos.y,pos.z));
+		
+		//RIGHT MULT - forward
+		//close except offset
+		var mat = new THREE.Matrix4();
+		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(-4,-4,0),mat);
+		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180),mat);
+		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(4,4,0),mat);
+		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(brickPosition.x,brickPosition.y,brickPosition.z),mat);
+		
+		//LEFT MULT - back
+		//same as RIGHT MULT - forward
+		// var mat = new THREE.Matrix4();
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(pos.x,pos.y,pos.z));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(-4,-4,0));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(4,4,0));
+
+		//RIGHT MULT - back
+		//same as LEFT MULT - forward
+		// var mat = new THREE.Matrix4();
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(pos.x,pos.y,pos.z),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(-4,-4,0),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(4,4,0),mat);
+		// 
+		
+		return mat;
+}
+
 
 function mouseDownPlaceBrick(event) {
 	if(effectController.placeBrick) {
@@ -263,7 +301,48 @@ function mouseMovePlaceBrick( event ) {
 		//offset is half x,y and full knob height from registered click
 		var offset = new THREE.Vector3(4,4,1.8);
 		
-		leg.position.set(pos.x,pos.y,pos.z);
+
+		// var mat = leg.matrix.clone();
+		
+		//LEFT MULT - forward
+		// var mat = new THREE.Matrix4();
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(4,4,0));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(-4,-4,0));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(pos.x,pos.y,pos.z));
+		
+		//RIGHT MULT - forward
+		//close except offset
+		// var mat = new THREE.Matrix4();
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(-4,-4,0),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(4,4,0),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(pos.x,pos.y,pos.z),mat);
+		
+		//LEFT MULT - back
+		//same as RIGHT MULT - forward
+		// var mat = new THREE.Matrix4();
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(pos.x,pos.y,pos.z));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(-4,-4,0));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180));
+		// mat = new THREE.Matrix4().multiplyMatrices(mat,new THREE.Matrix4().makeTranslation(4,4,0));
+
+		//RIGHT MULT - back
+		//same as LEFT MULT - forward
+		// var mat = new THREE.Matrix4();
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(pos.x,pos.y,pos.z),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(-4,-4,0),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180),mat);
+		// mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(4,4,0),mat);
+		
+		var mat = calculateBrickMatrix(pos);
+
+		leg.matrixAutoUpdate = false;
+		leg.matrix.copy(mat);
+		leg.matrixWorldNeedsUpdate = true;
+
+//		leg.position.set(pos.x,pos.y,pos.z);
+		//leg.position.add(pos);
 		scene.add(leg);
 	
 		tempBricks.push(leg);
