@@ -42,7 +42,8 @@ function init() {
 		viewSize / 2, -viewSize / 2,
 		-10000, 10000 );
 
-	camera.position.set(-450,-1000,350);
+	// camera.position.set(-450,-1000,350);
+	camera.position.set(40,-10,30);
 	camera.up.set(0,0,1);
 	// CONTROLS
 	cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
@@ -301,7 +302,11 @@ function render() {
 	var delta = clock.getDelta();
 	cameraControls.update(delta);
 
-	viewSize = effectController.height;
+	//calculate view size based on camera distance from target
+	var diff = new THREE.Vector3().subVectors(camera.position,cameraControls.target);
+	var dist = Math.sqrt(diff.x*diff.x + diff.y*diff.y + diff.z*diff.z);
+	// console.log(dist);
+	viewSize = dist;
 
 	camera.left = -aspectRatio*viewSize / 2;
 	camera.right = aspectRatio*viewSize / 2;
@@ -315,8 +320,6 @@ function render() {
 function setupGui() {
 
 	effectController = {
-		height:80,
-
 		placeBrick:true,
 		brickSizeX:1,
 		brickSizeY:1,
@@ -330,8 +333,6 @@ function setupGui() {
 	cameraControls.enabled = !effectController.placeBrick; 
 
 	var gui = new dat.GUI();
-	var f = gui.addFolder("Camera")
-	f.add(effectController, "height", 1, 300).name("height");
 	f = gui.addFolder("BrickInfo");
 	var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
 	f.add(effectController,"brickSizeX",1,10).step(1).name("brick length");
