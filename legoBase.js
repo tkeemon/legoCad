@@ -333,12 +333,13 @@ function setupGui() {
 	var f = gui.addFolder("Camera")
 	f.add(effectController, "height", 1, 300).name("height");
 	f = gui.addFolder("BrickInfo");
+	var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
 	f.add(effectController,"brickSizeX",1,10).step(1).name("brick length");
 	f.add(effectController,"brickSizeY",1,10).step(1).name("brick width");
 	f.add(effectController,'brickRotation',0,270).step(90).name("brick rotation");
-	f.addColor(effectController,"brickColor");
 	f.add(effectController,"brickThin").name("Thin brick?");
-	var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
+	f.addColor(effectController,"brickColor");
+	
 
 	placeBrickHandle.onChange(function(value) {
 		// enable/disable cameraControls
