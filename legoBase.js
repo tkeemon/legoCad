@@ -13,6 +13,7 @@ var aspectRatio;
 
 var planeSize = 100; //mm
 var groundPlaneSize = 20;
+var groundPlane;
 
 var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
@@ -82,7 +83,7 @@ function fillScene() {
 	//var groundPlane = new LegoBrick(20,20,true);
 	var groundPlaneGeometry = new THREE.LegoBrick({unitsLength:20,unitsWidth:20,isThinPiece:true });
 
-	var groundPlane = new THREE.Mesh(groundPlaneGeometry,
+	groundPlane = new THREE.Mesh(groundPlaneGeometry,
 								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true }));
 	groundPlane.position.z -= 3.1; //place top surface of brick at z=0
 	scene.add(groundPlane);
@@ -318,6 +319,10 @@ function render() {
 function setupGui() {
 
 	effectController = {
+		groundPlaneVisible:true,
+		groundPlaneOpacity:1.0,
+		groundPlaneColor:0xFF0000,
+
 		placeBrick:true,
 		brickSizeX:1,
 		brickSizeY:1,
@@ -331,6 +336,11 @@ function setupGui() {
 	cameraControls.enabled = !effectController.placeBrick; 
 
 	var gui = new dat.GUI();
+	f = gui.addFolder("GroundPlane");
+	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
+	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
+	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
+
 	f = gui.addFolder("BrickInfo");
 	var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
 	f.add(effectController,"brickSizeX",1,10).step(1).name("brick length");
@@ -343,6 +353,17 @@ function setupGui() {
 	placeBrickHandle.onChange(function(value) {
 		// enable/disable cameraControls
 		cameraControls.enabled = !value;
+	});
+
+	//ground plane vis controls
+	gpv.onChange(function(value) { //visibility
+		groundPlane.visible = value;
+	});
+	gpt.onChange(function(value) { //transparancy
+		groundPlane.material.opacity = value;
+	});
+	gpc.onChange(function(value) { //color
+		groundPlane.material.color = new THREE.Color(value);
 	});
 
 
