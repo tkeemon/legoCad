@@ -153,8 +153,9 @@ function findIntersectingBrick(mx,my) {
 
 //should go in lego brick class
 function calculateClosestBrickPosition(brick,vec) {
-	var objPos = brick.position;
-	var clickPos = vec.sub(objPos);
+	var e = brick.matrix.elements;
+	var objPos = new THREE.Vector3(e[12],e[13],e[14]);
+	var clickPos = vec;
 
 	//finding brick offset
 	var legoUnitSize = 8;
@@ -167,13 +168,10 @@ function calculateClosestBrickPosition(brick,vec) {
 		return undefined;
 
 	//calculating 3d position based off of brick offset
-	//taken directly from LegoBrick.js
-	//		transMat.setPosition(new THREE.Vector3(knobStartX+xx*xUnitLength,knobStartY+yy*yUnitLength,(zLength+knobHeight)/2));
-	//TODO: set appropriate z component
 	var pos = new THREE.Vector3(xBlockNum*legoUnitSize,yBlockNum*legoUnitSize,0);
-	pos.add(brick.position);
-	pos.z += brick.geometry.depth;
-	//readjust for parent brick offset
+	//setting z component above selected brick
+	pos.z += (brick.geometry.depth + objPos.z);
+	
 	return pos;
 }
 
