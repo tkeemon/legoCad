@@ -154,19 +154,35 @@ function findIntersectingBrick(mx,my) {
 
 //should go in lego brick class
 function calculateClosestBrickPosition(brick,vec) {
+	//prevent adding a brick by clicking on the side of another
+	var CLICK_THRESHOLD = .1;
+
 	var e = brick.matrix.elements;
 	var objPos = new THREE.Vector3(e[12],e[13],e[14]);
 	var clickPos = vec;
 
-	//finding brick offset
 	var legoUnitSize = 8;
-	var xBlockNum = Math.floor(clickPos.x/legoUnitSize);
-	var yBlockNum = Math.floor(clickPos.y/legoUnitSize);
+	var xClickPos = clickPos.x/legoUnitSize;
+	var yClickPos = clickPos.y/legoUnitSize;
+	//finding brick offset
+	var xBlockNum = Math.floor(xClickPos);
+	var yBlockNum = Math.floor(yClickPos);
 
 	//brick not set to negative values
 	//TODO: prevent bricks from being set off positive end of parent brick
 	if(xBlockNum<0 || yBlockNum<0)
 		return undefined;
+
+	//prevent clicking on side of previous brick
+	// TODO: find a more efficient way of doing this
+	if(Math.abs(xClickPos-xBlockNum) < CLICK_THRESHOLD ||
+	   Math.abs(yClickPos-yBlockNum) < CLICK_THRESHOLD) {
+		return undefined;
+	}
+	if(Math.abs(xClickPos-xBlockNum) > 1-CLICK_THRESHOLD ||
+	   Math.abs(yClickPos-yBlockNum) > 1-CLICK_THRESHOLD) {
+		return undefined;
+	}
 
 	//calculating 3d position based off of brick offset
 	var pos = new THREE.Vector3(xBlockNum*legoUnitSize,yBlockNum*legoUnitSize,0);
@@ -179,6 +195,8 @@ function calculateClosestBrickPosition(brick,vec) {
 function calculateBrickMatrix(brickPosition) {
 		
 		//RIGHT MULT - forward
+		// TODO - make more efficient??
+		//		mat.multiply(new THREE.Matrix().make...).multiply(new THREE...)...
 		var mat = new THREE.Matrix4();
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(-4,-4,0),mat);
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeRotationZ(effectController.brickRotation*Math.PI/180),mat);
