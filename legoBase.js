@@ -304,6 +304,30 @@ function mouseMovePlaceBrick( event ) {
 	}
 }
 
+//just creates json string for now
+function exportToJson() {
+	
+	var jsonStr = '';
+	//skip brick[0] -> the ground plane
+	for(var i=1; i<bricks.length; i++) {
+		var brick = bricks[i];
+		var geom = brick.geometry;
+
+		var objectJson = {
+			"unitsLength": geom.unitsLength,
+			"unitsWidth": geom.unitsWidth,
+			"thin": geom.isThinPiece,
+			"rotation": geom.brickRotation,
+			"color": brick.material.color,
+		};
+
+		jsonStr += JSON.stringify(objectJson);
+
+	}
+
+	return jsonStr;
+}
+
 /*
 function mouseUpPlaceBrick( event_info ) {
 	if(!effectController.rotateCamera) {
