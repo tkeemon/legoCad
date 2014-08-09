@@ -87,7 +87,7 @@ function fillScene() {
 								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true }));
 	groundPlane.position.z -= 3.1; //place top surface of brick at z=0
 	scene.add(groundPlane);
-	bricks.push(groundPlane);
+	//bricks.push(groundPlane);
 
 	Coordinates.drawAllAxes({axisLength:100,axisRadius:1,axisTess:50});
 }
@@ -113,6 +113,7 @@ function drawHelpers() {
 
 //list bricks
 function listAllObjects() {
+	console.log('num bricks: ' + bricks.length);
 	console.log('bricks:');
 	for(var x=0; x<bricks.length; x++) {
 		console.log(bricks[x]);
