@@ -328,6 +328,18 @@ function exportToJson() {
 	return jsonStr;
 }
 
+function clearBricks() {
+
+	for(var i=0; i<bricks.length; i++) {
+		var b = bricks[i];
+		scene.remove(b);
+	}
+
+	bricks = [];
+	scene.add(groundPlane);
+	bricks.push(groundPlane);
+}
+
 /*
 function mouseUpPlaceBrick( event_info ) {
 	if(!effectController.rotateCamera) {
