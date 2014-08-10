@@ -323,6 +323,10 @@ function exportToJson() {
 				"thin": geom.isThinPiece,
 				"rotation": geom.brickRotation,
 				"color": brick.material.color,
+
+				//in px coordinates. should this be in lego units??? (heights diff between thin/thick bricks)
+				"position": new THREE.Vector3().setFromMatrixPosition(brick.matrix),
+				"matrix": brick.matrix,
 		};
 	}
 
