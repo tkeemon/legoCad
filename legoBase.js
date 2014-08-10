@@ -306,26 +306,27 @@ function mouseMovePlaceBrick( event ) {
 
 //just creates json string for now
 function exportToJson() {
+	var VERSION = 0.01;
 	
-	var jsonStr = '';
+	var jsonObj = {};
+	jsonObj['version'] = VERSION;
+
 	//skip brick[0] -> the ground plane
 	for(var i=1; i<bricks.length; i++) {
 		var brick = bricks[i];
 		var geom = brick.geometry;
 
-		var objectJson = {
-			"unitsLength": geom.unitsLength,
-			"unitsWidth": geom.unitsWidth,
-			"thin": geom.isThinPiece,
-			"rotation": geom.brickRotation,
-			"color": brick.material.color,
+		var brickName = "brick"+i;
+		jsonObj[brickName] = {
+				"unitsLength": geom.unitsLength,
+				"unitsWidth": geom.unitsWidth,
+				"thin": geom.isThinPiece,
+				"rotation": geom.brickRotation,
+				"color": brick.material.color,
 		};
-
-		jsonStr += JSON.stringify(objectJson);
-
 	}
 
-	return jsonStr;
+	return jsonObj;
 }
 
 function clearBricks() {
