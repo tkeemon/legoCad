@@ -306,10 +306,11 @@ function mouseMovePlaceBrick( event ) {
 
 //just creates json string for now
 function exportToJson() {
-	var VERSION = 0.01;
+	var VERSION = '0.0.1';
 	
 	var jsonObj = {};
 	jsonObj['version'] = VERSION;
+	jsonObj['bricks'] = { numBricks:bricks.length-1 };
 
 	//skip brick[0] -> the ground plane
 	for(var i=1; i<bricks.length; i++) {
@@ -317,7 +318,7 @@ function exportToJson() {
 		var geom = brick.geometry;
 
 		var brickName = "brick"+i;
-		jsonObj[brickName] = {
+		jsonObj['bricks'][brickName] = {
 				"unitsLength": geom.unitsLength,
 				"unitsWidth": geom.unitsWidth,
 				"thin": geom.isThinPiece,
@@ -332,9 +333,61 @@ function exportToJson() {
 
 	return jsonObj;
 }
+var brick;
+//add specified bricks to scene from json
+function importJson(jsonStr) {
+	var VERSION = '0.0.1';
+	var json = JSON.parse(jsonStr);
+
+	if(json['version'] != VERSION) {
+		console.log('JSON brick data incompatible. Expected version ' + 
+			VERSION + ' but found version: ' + json['version']);
+		return;
+	}
+
+	var jsonBricks = json['bricks'];
+	var len = jsonBricks['numBricks'];
+	for(var i=0; i<len; i++) {
+
+		//TODO: find a better way of iterating over values
+		var brickName = 'brick'+(i+1);
+		// var brick = jsonBricks[brickName];
+		brick = jsonBricks[brickName];
+
+		//TODO potentially use json 'brick' values directly
+		var brickVals = {unitsLength:brick['unitsLength'],
+						 unitsWidth:brick['unitsWidth'],
+						 isThinPiece:brick['thin'],
+						 // brickColor:brick['color'],
+						 // brickRotation:brick['rotation'],
+						};
+		var colorObj = brick['color'];
+		var brickColor = new THREE.Color(colorObj.r,colorObj.g,colorObj.b);
+
+		var brickGeometry = new THREE.LegoBrick(brickVals);
+		var leg = new THREE.Mesh(brickGeometry,
+						new THREE.MeshPhongMaterial({color: brickColor, transparent:false }));
+
+		//TODO find a better way of generating matrix
+		var mat = new THREE.Matrix4();
+		for(var x=0; x<16; x++) {
+			mat.elements[x] = brick['matrix']['elements'][x];
+		}
+// 		mat.elements = brick['matrix'].elements;
+		leg.matrixAutoUpdate = false;
+		leg.matrix.copy(mat);
+		leg.matrixWorldNeedsUpdate = true;
+
+		scene.add(leg);
+	
+		bricks.push(leg);
+	}
+
+	return;
+
+}
 
 function clearBricks() {
-
 	for(var i=0; i<bricks.length; i++) {
 		var b = bricks[i];
 		scene.remove(b);
