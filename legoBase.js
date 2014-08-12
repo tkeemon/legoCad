@@ -209,7 +209,7 @@ function calculateBrickMatrix(brickPosition) {
 
 
 function mouseDownPlaceBrick(event) {
-	if(effectController.placeBrick) {
+	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
 		//console.log(event);
@@ -259,7 +259,7 @@ function mouseMovePlaceBrick( event ) {
 		scene.remove(b);
 	}
 
-    if(effectController.placeBrick) {
+    if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
 		//console.log(event);
@@ -432,23 +432,30 @@ function render() {
 function setupGui() {
 
 	effectController = {
+		mouseState:"Place Brick",
+
 		groundPlaneVisible:true,
 		groundPlaneOpacity:1.0,
 		groundPlaneColor:0xFF0000,
 
-		placeBrick:true,
 		brickSizeX:1,
 		brickSizeY:1,
 
 		brickThin:false,
 		brickColor:0x0000FF,
 		brickRotation:0,
+
+
 	};
 
-	//either place brick or enable moving camera
-	cameraControls.enabled = !effectController.placeBrick; 
+	//default state for mouse control
+	cameraControls.enabled = false;
 
 	var gui = new dat.GUI();
+	f = gui.addFolder("Mouse");
+	var mouseControlHandle = f.add(effectController,"mouseState",
+				["Place Brick","Select Brick","Rotate Camera"]).name("Mouse State");
+
 	f = gui.addFolder("GroundPlane");
 	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
 	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
@@ -462,6 +469,20 @@ function setupGui() {
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.addColor(effectController,"brickColor");
 	
+
+	mouseControlHandle.onChange(function(value) {
+		
+		if(value=="Place Brick") {
+			cameraControls.enabled = false;
+
+		}else if(value=="Select Brick") {
+			cameraControls.enabled = false;
+
+		}else if(value=="Rotate Camera") {
+			cameraControls.enabled = true;
+		
+		}
+	});
 
 	placeBrickHandle.onChange(function(value) {
 		// enable/disable cameraControls
