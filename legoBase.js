@@ -20,6 +20,7 @@ var canvasHeight = window.innerHeight;
 
 var bricks = [];
 var tempBricks = [];
+var selectedBricks = [];
 
 function init() {
 
@@ -51,11 +52,11 @@ function init() {
 	cameraControls.target.set(80,80,0);
 
 	//custom event listener
+	//TODO- break into separate .js files
 	renderer.domElement.addEventListener('mousedown',mouseDownPlaceBrick);
-	//renderer.domElement.addEventListener('mouseup',mouseUpPlaceBrick);
-	
-	//renderer.domElement.addEventListener('mousemove',mouseDownPlaceBrick);
 	renderer.domElement.addEventListener('mousemove',mouseMovePlaceBrick);
+
+	renderer.domElement.addEventListener('mousedown',mouseDownSelectBrick);
 
 	projector = new THREE.Projector();
 
@@ -304,6 +305,33 @@ function mouseMovePlaceBrick( event ) {
 	}
 }
 
+//change how bricks look when selected
+function mouseDownSelectBrick(event) {
+
+	//TODO - only reset if CTRL button not held down
+	while(selectedBricks.length > 0) {
+		var b = selectedBricks.pop();
+		b.material.opacity = .5;
+	}
+
+	if(effectController.mouseState == "Select Brick") {
+		event.preventDefault(); //doesnt prevent call to OrbitControls???
+	
+		var intersection = findIntersectingBrick(event.clientX,event.clientY);
+		//if no intersection found
+		if(!intersection)
+			return;
+		
+		var brick = intersection.object;
+		if(brick==groundPlane)
+			return; 
+		
+		brick.material.opacity = 1;
+
+		selectedBricks.push(brick);
+	}
+}
+
 //just creates json string for now
 function exportToJson() {
 	var VERSION = '0.0.1';
@@ -398,6 +426,16 @@ function clearBricks() {
 	bricks.push(groundPlane);
 }
 
+function setAllBrickOpacity(val) {
+	//skip ground plane
+	for(var x=1; x<bricks.length; x++) {
+		var b = bricks[x];
+
+		b.material.transparent = val<1 ? true : false;
+		b.material.opacity = val;
+	}
+}
+
 /*
 function mouseUpPlaceBrick( event_info ) {
 	if(!effectController.rotateCamera) {
@@ -462,7 +500,7 @@ function setupGui() {
 	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
 
 	f = gui.addFolder("BrickInfo");
-	var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
+	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
 	f.add(effectController,"brickSizeX",1,10).step(1).name("brick length");
 	f.add(effectController,"brickSizeY",1,10).step(1).name("brick width");
 	f.add(effectController,'brickRotation',0,270).step(90).name("brick rotation");
@@ -474,20 +512,23 @@ function setupGui() {
 		
 		if(value=="Place Brick") {
 			cameraControls.enabled = false;
+			setAllBrickOpacity(1);
 
 		}else if(value=="Select Brick") {
 			cameraControls.enabled = false;
+			setAllBrickOpacity(.5);
 
 		}else if(value=="Rotate Camera") {
 			cameraControls.enabled = true;
-		
+			setAllBrickOpacity(1);
+
 		}
 	});
 
-	placeBrickHandle.onChange(function(value) {
-		// enable/disable cameraControls
-		cameraControls.enabled = !value;
-	});
+	// placeBrickHandle.onChange(function(value) {
+	// 	// enable/disable cameraControls
+	// 	cameraControls.enabled = !value;
+	// });
 
 	//ground plane vis controls
 	gpv.onChange(function(value) { //visibility
