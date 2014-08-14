@@ -483,7 +483,15 @@ function setupGui() {
 		brickColor:0x0000FF,
 		brickRotation:0,
 
+		// saveLabel:'',
+		// saveData:function() {
+		// },
 
+		loadLabel:'',
+		loadData:function() {
+			// console.log("loading: " + effectController.loadLabel);
+			importJson(effectController.loadLabel);			
+		},
 	};
 
 	//default state for mouse control
@@ -506,6 +514,14 @@ function setupGui() {
 	f.add(effectController,'brickRotation',0,270).step(90).name("brick rotation");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.addColor(effectController,"brickColor");
+
+	f = gui.addFolder("Load JSON");
+	f.add(effectController,"loadData").name("Load Bricks");
+	f.add(effectController,"loadLabel").name("JSON Data");
+
+	// f.add(effectController,"saveData").name("Save Model");
+	// f.add(effectController,"saveLabel").name("Save Label");
+	
 	
 
 	mouseControlHandle.onChange(function(value) {
