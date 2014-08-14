@@ -514,11 +514,11 @@ function setupGui() {
 
 	f = gui.addFolder("BrickInfo");
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
-	f.add(effectController,"brickSizeX",1,10).step(1).name("brick length");
-	f.add(effectController,"brickSizeY",1,10).step(1).name("brick width");
-	f.add(effectController,'brickRotation',0,270).step(90).name("brick rotation");
+	f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
+	f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
+	f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
 	f.add(effectController,"brickThin").name("Thin brick?");
-	f.addColor(effectController,"brickColor");
+	f.addColor(effectController,"brickColor").name("Color");
 
 	f = gui.addFolder("Load Brick Data JSON");
 	f.add(effectController,"loadLabel").name("JSON Data");
