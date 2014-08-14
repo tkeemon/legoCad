@@ -483,13 +483,18 @@ function setupGui() {
 		brickColor:0x0000FF,
 		brickRotation:0,
 
-		// saveLabel:'',
-		// saveData:function() {
-		// },
+		saveLabel:'',
+		saveData:function() {
+			var jsonStr = JSON.stringify(exportToJson());
+			//console.log(jsonStr);
+			effectController.saveLabel = jsonStr;
+			//is it ok to use 'saveText' handle before it's defined
+			saveText.updateDisplay();
+		},
 
 		loadLabel:'',
 		loadData:function() {
-			// console.log("loading: " + effectController.loadLabel);
+			//TODO catch syntax exception, set alert box
 			importJson(effectController.loadLabel);			
 		},
 	};
@@ -515,14 +520,14 @@ function setupGui() {
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.addColor(effectController,"brickColor");
 
-	f = gui.addFolder("Load JSON");
-	f.add(effectController,"loadData").name("Load Bricks");
+	f = gui.addFolder("Load Brick Data JSON");
 	f.add(effectController,"loadLabel").name("JSON Data");
+	f.add(effectController,"loadData").name("Load");
 
-	// f.add(effectController,"saveData").name("Save Model");
-	// f.add(effectController,"saveLabel").name("Save Label");
-	
-	
+	f = gui.addFolder("Save Brick Data JSON");
+	var saveButton = f.add(effectController,"saveData").name("Save");
+	var saveText = f.add(effectController,"saveLabel").name("JSON Data");
+		
 
 	mouseControlHandle.onChange(function(value) {
 		
@@ -541,11 +546,6 @@ function setupGui() {
 		}
 	});
 
-	// placeBrickHandle.onChange(function(value) {
-	// 	// enable/disable cameraControls
-	// 	cameraControls.enabled = !value;
-	// });
-
 	//ground plane vis controls
 	gpv.onChange(function(value) { //visibility
 		groundPlane.visible = value;
@@ -556,8 +556,6 @@ function setupGui() {
 	gpc.onChange(function(value) { //color
 		groundPlane.material.color = new THREE.Color(value);
 	});
-
-
 }
 init();
 setupGui();
