@@ -497,6 +497,10 @@ function setupGui() {
 			//TODO catch syntax exception, set alert box
 			importJson(effectController.loadLabel);			
 		},
+
+		clearScene:function() {
+			clearBricks();
+		},
 	};
 
 	//default state for mouse control
@@ -528,6 +532,8 @@ function setupGui() {
 	var saveButton = f.add(effectController,"saveData").name("Save");
 	var saveText = f.add(effectController,"saveLabel").name("JSON Data");
 		
+	f = gui.addFolder("Clear Scene");
+	f.add(effectController,"clearScene").name("Clear");
 
 	mouseControlHandle.onChange(function(value) {
 		
