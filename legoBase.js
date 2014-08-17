@@ -361,7 +361,7 @@ function exportToJson() {
 
 	return jsonObj;
 }
-var brick;
+
 //add specified bricks to scene from json
 function importJson(jsonStr) {
 	var VERSION = '0.0.1';
@@ -380,7 +380,7 @@ function importJson(jsonStr) {
 		//TODO: find a better way of iterating over values
 		var brickName = 'brick'+(i+1);
 		// var brick = jsonBricks[brickName];
-		brick = jsonBricks[brickName];
+		var brick = jsonBricks[brickName];
 
 		//TODO potentially use json 'brick' values directly
 		var brickVals = {unitsLength:brick['unitsLength'],
@@ -520,7 +520,7 @@ function setupGui() {
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
 	f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
 	f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
-	f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
+	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.addColor(effectController,"brickColor").name("Color");
 
@@ -561,6 +561,11 @@ function setupGui() {
 	});
 	gpc.onChange(function(value) { //color
 		groundPlane.material.color = new THREE.Color(value);
+	});
+
+	rotateHandle.onChange(function(value) {
+		//round down to nearest 90 deg
+		effectController.brickRotation = Math.floor(value/90) * 90;
 	});
 }
 init();
