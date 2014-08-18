@@ -22,6 +22,7 @@ var bricks = [];
 var tempBricks = [];
 var selectedBricks = [];
 var brickMap;
+var brickIdCount = 1;
 
 function init() {
 
@@ -88,7 +89,7 @@ function fillScene() {
 
 	groundPlane = new THREE.Mesh(groundPlaneGeometry,
 								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true }));
-	groundPlane.position.z -= 3.1; //place top surface of brick at z=0
+	groundPlane.position.z -= 3.2; //place top surface of brick at z=0
 	scene.add(groundPlane);
 	bricks.push(groundPlane);
 
@@ -106,12 +107,42 @@ function initBrickMap() {
 	}
 }
 
-function checkBrickMap() {
-	
+
+function isValidBrickPosition(pos,brickVals) {
+
+	var xStart = pos.x/8;
+	var yStart = pos.y/8;
+	var zStart = Math.round(pos.z/3.2);
+	var zEnd = brickVals.isThinPiece ? 1 : 3;
+
+	for(var x=0; x<brickVals.unitsLength; x++) {
+		for(var y=0; y<brickVals.unitsWidth; y++) {
+			for(var z=0; z<zEnd; z++) {
+				if(brickMap[xStart+x][yStart+y][zStart+z] > 0) {
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
-function updateBrickMap() {
+function updateBrickMap(pos,brickVals) {
+	var xStart = pos.x/8;
+	var yStart = pos.y/8;
+	var zStart = Math.round(pos.z/3.2);
+	var zEnd = brickVals.isThinPiece ? 1 : 3;
 
+	for(var x=0; x<brickVals.unitsLength; x++) {
+		for(var y=0; y<brickVals.unitsWidth; y++) {
+			for(var z=0; z<zEnd; z++) {
+				brickMap[xStart+x][yStart+y][zStart+z] = brickIdCount;
+			}
+		}
+	}
+
+	brickIdCount++;
 }
 
 function printCameraData() {
@@ -257,6 +288,10 @@ function mouseDownPlaceBrick(event) {
 						 brickRotation:effectController.brickRotation,
 						};
 		
+		var valid = isValidBrickPosition(pos,brickVals);
+		console.log(valid);
+		updateBrickMap(pos,brickVals);
+
 		var brickGeometry = new THREE.LegoBrick(brickVals);
 
 		var leg = new THREE.Mesh(brickGeometry,
