@@ -21,6 +21,7 @@ var canvasHeight = window.innerHeight;
 var bricks = [];
 var tempBricks = [];
 var selectedBricks = [];
+var brickMap;
 
 function init() {
 
@@ -61,6 +62,7 @@ function init() {
 	projector = new THREE.Projector();
 
 	fillScene();
+	initBrickMap();
 }
 
 function fillScene() {
@@ -82,7 +84,7 @@ function fillScene() {
 	///////////////////////
 	// GROUND
 	//var groundPlane = new LegoBrick(20,20,true);
-	var groundPlaneGeometry = new THREE.LegoBrick({unitsLength:20,unitsWidth:20,isThinPiece:true });
+	var groundPlaneGeometry = new THREE.LegoBrick({unitsLength:groundPlaneSize,unitsWidth:groundPlaneSize,isThinPiece:true });
 
 	groundPlane = new THREE.Mesh(groundPlaneGeometry,
 								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true }));
@@ -91,6 +93,25 @@ function fillScene() {
 	bricks.push(groundPlane);
 
 	Coordinates.drawAllAxes({axisLength:100,axisRadius:1,axisTess:50});
+}
+
+function initBrickMap() {
+	brickMap = new Array(groundPlaneSize);
+	for(var x=0; x<groundPlaneSize; x++) {
+		brickMap[x] = new Array(groundPlaneSize);
+		for(var y=0; y<groundPlaneSize; y++) {
+			brickMap[x][y] = new Array(1);
+			brickMap[x][y][0] = 0;
+		}
+	}
+}
+
+function checkBrickMap() {
+	
+}
+
+function updateBrickMap() {
+
 }
 
 function printCameraData() {
