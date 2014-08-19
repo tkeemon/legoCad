@@ -61,6 +61,7 @@ function init() {
 	renderer.domElement.addEventListener('mousedown',mouseDownSelectBrick);
 
 	renderer.domElement.addEventListener('mousedown',mouseDownSetGroundPlaneHeight);
+	window.addEventListener('keydown',keyDownListener,false);
 
 	projector = new THREE.Projector();
 
@@ -471,6 +472,21 @@ function mouseDownSetGroundPlaneHeight(event) {
 		//TODO -automatically update groundPlaneHeight in gui
 		effectController.groundPlaneHeight = Math.round((newHeight+3.2)/3.2);
 		groundPlane.position.z = newHeight-3.2;
+	}
+}
+
+function keyDownListener(event) {
+	var key = event.keyCode;
+
+	//delete key
+	if(key==46) {
+		while(selectedBricks.length > 0) {
+			var b = selectedBricks.pop();
+
+			var ind = bricks.indexOf(b);
+			
+			scene.remove(b);
+		}
 	}
 }
 
