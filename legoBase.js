@@ -141,7 +141,7 @@ function isValidBrickPosition(pos,brickVals) {
 		default: 
 			conosle.log('could not determine rotation');
 	}
-	
+
 	for(var x=0; x<xDist; x++) {
 		for(var y=0; y<yDist; y++) {
 			for(var z=0; z<zDist; z++) {
@@ -343,7 +343,10 @@ function mouseDownPlaceBrick(event) {
 						 brickRotation:effectController.brickRotation,
 						};
 		
-		var valid = isValidBrickPosition(pos,brickVals);
+		//if the brick doesn't fit cleanly
+		if(!isValidBrickPosition(pos,brickVals)) 
+			return;
+
 		console.log(valid);
 		updateBrickMap(pos,brickVals);
 
@@ -397,6 +400,12 @@ function mouseMovePlaceBrick( event ) {
 						 brickRotation:effectController.brickRotation,
 						 //brickOpacity: .5,
 						};
+
+		//TODO - apply some sort of texture to transparent brick that can't be placed
+		//if the brick doesn't fit cleanly
+		// if(!isValidBrickPosition(pos,brickVals)) 
+			// return;
+
 		
 		var brickGeometry = new THREE.LegoBrick(brickVals);
 
