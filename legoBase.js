@@ -139,7 +139,7 @@ function isValidBrickPosition(pos,brickVals) {
 			yStart = pos.y/8 - brickVals.unitsLength + 1;
 			xDist = brickVals.unitsWidth;
 			yDist = brickVals.unitsLength;
-			// break;
+			break;
 		default: 
 			conosle.log('could not determine rotation');
 	}
@@ -185,7 +185,7 @@ function updateBrickMap(pos,brickVals) {
 			yStart = pos.y/8 - brickVals.unitsLength + 1;
 			xDist = brickVals.unitsWidth;
 			yDist = brickVals.unitsLength;
-			// break;
+			break;
 		default: 
 			conosle.log('could not determine rotation');
 	}
