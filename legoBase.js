@@ -88,7 +88,7 @@ function fillScene() {
 	var groundPlaneGeometry = new THREE.LegoBrick({unitsLength:groundPlaneSize,unitsWidth:groundPlaneSize,isThinPiece:true });
 
 	groundPlane = new THREE.Mesh(groundPlaneGeometry,
-								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true }));
+								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true, opacity:0.5 }));
 	groundPlane.position.z -= 3.2; //place top surface of brick at z=0
 	scene.add(groundPlane);
 	bricks.push(groundPlane);
@@ -192,7 +192,6 @@ function updateBrickMap(pos,brickVals) {
 		for(var y=0; y<yDist; y++) {
 			for(var z=0; z<zDist; z++) {
 				brickMap[xStart+x][yStart+y][zStart+z] = brickIdCount;
-				console.log('mapping at: ' + (xStart+x) + ', ' + (yStart+y) + ', ' + (zStart+z));
 			}
 		}
 	}
@@ -347,7 +346,6 @@ function mouseDownPlaceBrick(event) {
 		if(!isValidBrickPosition(pos,brickVals)) 
 			return;
 
-		console.log(valid);
 		updateBrickMap(pos,brickVals);
 
 		var brickGeometry = new THREE.LegoBrick(brickVals);
@@ -592,8 +590,9 @@ function setupGui() {
 	effectController = {
 		mouseState:"Place Brick",
 
+		groundPlaneHeight:0,
 		groundPlaneVisible:true,
-		groundPlaneOpacity:1.0,
+		groundPlaneOpacity:0.5,
 		groundPlaneColor:0xFF0000,
 
 		brickSizeX:1,
@@ -632,6 +631,7 @@ function setupGui() {
 				["Place Brick","Select Brick","Rotate Camera"]).name("Mouse State");
 
 	f = gui.addFolder("GroundPlane");
+	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height");
 	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
 	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
 	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
@@ -673,6 +673,9 @@ function setupGui() {
 	});
 
 	//ground plane vis controls
+	gpHeight.onChange(function(value) {
+		groundPlane.position.z = (value-1)*3.2;
+	});
 	gpv.onChange(function(value) { //visibility
 		groundPlane.visible = value;
 	});
