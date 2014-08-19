@@ -542,6 +542,10 @@ function clearBricks() {
 	bricks = [];
 	scene.add(groundPlane);
 	bricks.push(groundPlane);
+
+	//clear then reinit brickMap
+	brickMap = [];
+	initBrickMap();
 }
 
 function setAllBrickOpacity(val) {
