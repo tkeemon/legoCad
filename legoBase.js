@@ -109,35 +109,90 @@ function initBrickMap() {
 
 
 function isValidBrickPosition(pos,brickVals) {
+	var xStart, yStart, xDist, yDist;
 
-	var xStart = pos.x/8;
-	var yStart = pos.y/8;
 	var zStart = Math.round(pos.z/3.2);
-	var zEnd = brickVals.isThinPiece ? 1 : 3;
-
-	for(var x=0; x<brickVals.unitsLength; x++) {
-		for(var y=0; y<brickVals.unitsWidth; y++) {
-			for(var z=0; z<zEnd; z++) {
+	var zDist = brickVals.isThinPiece ? 1 : 3;
+	switch(brickVals.brickRotation) {
+		case 0:
+			xStart = pos.x/8;
+			yStart = pos.y/8;
+			xDist = brickVals.unitsLength;
+			yDist = brickVals.unitsWidth;
+			break;
+		case 90:
+			xStart = pos.x/8 - brickVals.unitsWidth + 1;
+			yStart = pos.y/8;
+			xDist = brickVals.unitsWidth;
+			yDist = brickVals.unitsLength;
+			break;
+		case 180:
+			xStart = pos.x/8 - brickVals.unitsLength + 1;
+			yStart = pos.y/8 - brickVals.unitsWidth + 1;
+			xDist = brickVals.unitsLength;
+			yDist = brickVals.unitsWidth;
+			break;
+		case 270:
+			xStart = pos.x/8;
+			yStart = pos.y/8 - brickVals.unitsLength + 1;
+			xDist = brickVals.unitsWidth;
+			yDist = brickVals.unitsLength;
+			// break;
+		default: 
+			conosle.log('could not determine rotation');
+	}
+	
+	for(var x=0; x<xDist; x++) {
+		for(var y=0; y<yDist; y++) {
+			for(var z=0; z<zDist; z++) {
 				if(brickMap[xStart+x][yStart+y][zStart+z] > 0) {
 					return false;
 				}
 			}
 		}
 	}
-
 	return true;
 }
 
 function updateBrickMap(pos,brickVals) {
-	var xStart = pos.x/8;
-	var yStart = pos.y/8;
-	var zStart = Math.round(pos.z/3.2);
-	var zEnd = brickVals.isThinPiece ? 1 : 3;
+	var xStart, yStart, xDist, yDist;
 
-	for(var x=0; x<brickVals.unitsLength; x++) {
-		for(var y=0; y<brickVals.unitsWidth; y++) {
-			for(var z=0; z<zEnd; z++) {
+	var zStart = Math.round(pos.z/3.2);
+	var zDist = brickVals.isThinPiece ? 1 : 3;
+	switch(brickVals.brickRotation) {
+		case 0:
+			xStart = pos.x/8;
+			yStart = pos.y/8;
+			xDist = brickVals.unitsLength;
+			yDist = brickVals.unitsWidth;
+			break;
+		case 90:
+			xStart = pos.x/8 - brickVals.unitsWidth + 1;
+			yStart = pos.y/8;
+			xDist = brickVals.unitsWidth;
+			yDist = brickVals.unitsLength;
+			break;
+		case 180:
+			xStart = pos.x/8 - brickVals.unitsLength + 1;
+			yStart = pos.y/8 - brickVals.unitsWidth + 1;
+			xDist = brickVals.unitsLength;
+			yDist = brickVals.unitsWidth;
+			break;
+		case 270:
+			xStart = pos.x/8;
+			yStart = pos.y/8 - brickVals.unitsLength + 1;
+			xDist = brickVals.unitsWidth;
+			yDist = brickVals.unitsLength;
+			// break;
+		default: 
+			conosle.log('could not determine rotation');
+	}
+
+	for(var x=0; x<xDist; x++) {
+		for(var y=0; y<yDist; y++) {
+			for(var z=0; z<zDist; z++) {
 				brickMap[xStart+x][yStart+y][zStart+z] = brickIdCount;
+				console.log('mapping at: ' + (xStart+x) + ', ' + (yStart+y) + ', ' + (zStart+z));
 			}
 		}
 	}
