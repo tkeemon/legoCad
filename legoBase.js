@@ -60,6 +60,8 @@ function init() {
 
 	renderer.domElement.addEventListener('mousedown',mouseDownSelectBrick);
 
+	renderer.domElement.addEventListener('mousedown',mouseDownSetGroundPlaneHeight);
+
 	projector = new THREE.Projector();
 
 	fillScene();
@@ -450,6 +452,28 @@ function mouseDownSelectBrick(event) {
 	}
 }
 
+function mouseDownSetGroundPlaneHeight(event) {
+	if(effectController.mouseState == "Set Groundplane Height") {
+		var intersection = findIntersectingBrick(event.clientX,event.clientY);
+		//if no intersection found
+		if(!intersection)
+			return;
+		
+		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
+		
+		var brick = intersection.object;
+		if(brick==groundPlane) {
+			return;
+		}
+		var newHeight = brick.matrix.elements[14];
+
+		//update effectController and set groundPlane object's height
+		//TODO -automatically update groundPlaneHeight in gui
+		effectController.groundPlaneHeight = Math.round((newHeight+3.2)/3.2);
+		groundPlane.position.z = newHeight-3.2;
+	}
+}
+
 //just creates json string for now
 function exportToJson() {
 	var VERSION = '0.0.1';
@@ -632,7 +656,7 @@ function setupGui() {
 	var gui = new dat.GUI();
 	f = gui.addFolder("Mouse");
 	var mouseControlHandle = f.add(effectController,"mouseState",
-				["Place Brick","Select Brick","Rotate Camera"]).name("Mouse State");
+				["Place Brick","Select Brick","Rotate Camera", "Set Groundplane Height"]).name("Mouse State");
 
 	f = gui.addFolder("GroundPlane");
 	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height");
