@@ -428,15 +428,17 @@ function mouseMovePlaceBrick( event ) {
 //change how bricks look when selected
 function mouseDownSelectBrick(event) {
 
-	//TODO - only reset if CTRL button not held down
-	while(selectedBricks.length > 0) {
-		var b = selectedBricks.pop();
-		b.material.opacity = .5;
-	}
-
 	if(effectController.mouseState == "Select Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
-	
+
+		//remove previously selected blocks if CTRL key not held
+		if(!event.ctrlKey) {
+			while(selectedBricks.length > 0) {
+				var b = selectedBricks.pop();
+				b.material.opacity = .5;
+			}
+		}
+
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
