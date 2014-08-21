@@ -656,17 +656,17 @@ function setupGui() {
 	cameraControls.enabled = false;
 
 	var gui = new dat.GUI();
-	f = gui.addFolder("Mouse");
+	f = gui.addFolder("Mouse Control");
 	var mouseControlHandle = f.add(effectController,"mouseState",
 				["Place Brick","Select Brick","Rotate Camera", "Set Groundplane Height"]).name("Mouse State");
 
-	f = gui.addFolder("GroundPlane");
+	f = gui.addFolder("Ground Plane");
 	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height");
 	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
 	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
 	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
 
-	f = gui.addFolder("BrickInfo");
+	f = gui.addFolder("Brick Info");
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
 	f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
 	f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
