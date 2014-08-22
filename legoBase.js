@@ -278,11 +278,6 @@ function calculateClosestBrickPosition(brick,vec) {
 	var xBlockNum = Math.floor(xClickPos);
 	var yBlockNum = Math.floor(yClickPos);
 
-	//brick not set to negative values
-	//TODO: prevent bricks from being set off positive end of parent brick
-	if(xBlockNum<0 || yBlockNum<0)
-		return undefined;
-
 	//prevent clicking on side of previous brick
 	// TODO: find a more efficient way of doing this
 	if(Math.abs(xClickPos-xBlockNum) < CLICK_THRESHOLD ||
@@ -622,7 +617,7 @@ function setupGui() {
 
 		groundPlaneHeight:0,
 		groundPlaneVisible:true,
-		groundPlaneOpacity:0.5,
+		groundPlaneOpacity:1.0,
 		groundPlaneColor:0xFF0000,
 
 		brickSizeX:1,
