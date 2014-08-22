@@ -90,7 +90,7 @@ function fillScene() {
 	var groundPlaneGeometry = new THREE.LegoBrick({unitsLength:groundPlaneSize,unitsWidth:groundPlaneSize,isThinPiece:true });
 
 	groundPlane = new THREE.Mesh(groundPlaneGeometry,
-								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true, opacity:0.5 }));
+								new THREE.MeshPhongMaterial({color: 0xFF0000, transparent:true, opacity:1.0 }));
 	groundPlane.position.z -= 3.2; //place top surface of brick at z=0
 	scene.add(groundPlane);
 	bricks.push(groundPlane);
