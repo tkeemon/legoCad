@@ -504,7 +504,13 @@ function exportToJson() {
 //add specified bricks to scene from json
 function importJson(jsonStr) {
 	var VERSION = '0.0.1';
-	var json = JSON.parse(jsonStr);
+	var json;
+	try {
+		json = JSON.parse(jsonStr);
+	}catch(e) {
+		alert('Could not load JSON data. \nException:\n\t' + e);
+		return;
+	}
 
 	if(json['version'] != VERSION) {
 		console.log('JSON brick data incompatible. Expected version ' + 
