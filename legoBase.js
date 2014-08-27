@@ -308,9 +308,29 @@ function calculateBrickMatrix(brickPosition) {
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(4,4,0),mat);
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(brickPosition.x,brickPosition.y,brickPosition.z),mat);
 
+		//for exploded view
+
+		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation((brickPosition.x/8)*(0),(brickPosition.y/8)*(0),(brickPosition.z/3.2)*(effectController.explosionDist)),mat);
+
 		return mat;
 }
 
+//used by exploded view
+function updateAllBrickPositions() {
+	for(var x=0; x<bricks.length; x++) {
+		var brick = bricks[x];
+		
+		//calculate 0 exploded position based on segment positions
+		
+		var pos = new THREE.Vector3().setFromMatrixPosition(brick.matrix);
+
+		var newMat = calculateBrickMatrix(pos);
+
+		brick.matrixAutoUpdate = false;
+		brick.matrix.copy(newMat);
+		brick.matrixWorldNeedsUpdate = true;
+	}
+}
 
 function mouseDownPlaceBrick(event) {
 	if(effectController.mouseState == "Place Brick") {
@@ -645,6 +665,8 @@ function setupGui() {
 		brickColor:0x0000FF,
 		brickRotation:0,
 
+		explosionDist:0,
+
 		saveLabel:'',
 		saveData:function() {
 			var jsonStr = JSON.stringify(exportToJson());
@@ -681,12 +703,15 @@ function setupGui() {
 
 	f = gui.addFolder("Brick Placement");
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
-	f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
-	f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
+	var lengthHandle = f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
+	var widthHandle = f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
 	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
+
+	f = gui.addFolder("Exploded View");
+	var expHandle = f.add(effectController,"explosionDist",0,10).step(1).name("Distance (mm)");
 
 	f = gui.addFolder("Load Brick Data JSON");
 	f.add(effectController,"loadLabel").name("JSON Data");
@@ -740,6 +765,7 @@ function setupGui() {
 
 	expHandle.onChange(function(value) {
 		effectController.explosionDist = Math.floor(value);
+		updateAllBrickPositions();
 	});
 
 	rotateHandle.onChange(function(value) {
