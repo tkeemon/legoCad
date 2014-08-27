@@ -309,7 +309,6 @@ function calculateBrickMatrix(brickPosition) {
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(brickPosition.x,brickPosition.y,brickPosition.z),mat);
 
 		//for exploded view
-
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation((brickPosition.x/8)*(0),(brickPosition.y/8)*(0),(brickPosition.z/3.2)*(effectController.explosionDist)),mat);
 
 		return mat;
@@ -321,8 +320,9 @@ function updateAllBrickPositions() {
 		var brick = bricks[x];
 		
 		//calculate 0 exploded position based on segment positions
-		
-		var pos = new THREE.Vector3().setFromMatrixPosition(brick.matrix);
+
+		//take the 0 position from Mesh object
+		var pos = brick.position;
 
 		var newMat = calculateBrickMatrix(pos);
 
@@ -374,6 +374,9 @@ function mouseDownPlaceBrick(event) {
 
 		var leg = new THREE.Mesh(brickGeometry,
 						new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:false }));
+		
+		//set 0 position (to handle exploded view)
+		leg.position = pos;
 
 		//account for rotation
 		var mat = calculateBrickMatrix(pos);
