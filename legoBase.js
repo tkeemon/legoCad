@@ -316,7 +316,7 @@ function calculateBrickMatrix(brickPosition) {
 
 //used by exploded view
 function updateAllBrickPositions() {
-	for(var x=0; x<bricks.length; x++) {
+	for(var x=1; x<bricks.length; x++) {
 		var brick = bricks[x];
 		
 		//calculate 0 exploded position based on segment positions
