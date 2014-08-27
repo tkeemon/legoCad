@@ -311,15 +311,6 @@ function calculateBrickMatrix(brickPosition) {
 		return mat;
 }
 
-function updateAllBrickTranslations(vec) {
-	var mat = new THREE.Matrix4();
-	mat.elements[12] = vec.x;
-	mat.elements[13] = vec.y;
-	mat.elements[14] = vec.z;
-
-	
-}
-
 
 function mouseDownPlaceBrick(event) {
 	if(effectController.mouseState == "Place Brick") {
@@ -654,8 +645,6 @@ function setupGui() {
 		brickColor:0x0000FF,
 		brickRotation:0,
 
-		explosionDist:0,
-
 		saveLabel:'',
 		saveData:function() {
 			var jsonStr = JSON.stringify(exportToJson());
@@ -699,9 +688,6 @@ function setupGui() {
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
 
-	f = gui.addFolder("Exploded View");
-	var expHandle = f.add(effectController,"explosionDist",0,10).step(1).name("Distance (mm)");
-
 	f = gui.addFolder("Load Brick Data JSON");
 	f.add(effectController,"loadLabel").name("JSON Data");
 	f.add(effectController,"loadData").name("Load");
@@ -742,6 +728,14 @@ function setupGui() {
 	});
 	gpc.onChange(function(value) { //color
 		groundPlane.material.color = new THREE.Color(value);
+	});
+
+	lengthHandle.onChange(function(value) {
+		effectController.brickSizeX = Math.floor(value);
+	});
+
+	widthHandle.onChange(function(value) {
+		effectController.brickSizeY = Math.floor(value);
 	});
 
 	expHandle.onChange(function(value) {
