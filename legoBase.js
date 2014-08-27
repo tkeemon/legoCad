@@ -744,9 +744,9 @@ function setupGui() {
 		groundPlane.material.color = new THREE.Color(value);
 	});
 
-	expHandle.onChange(function(value)) {
+	expHandle.onChange(function(value) {
 		effectController.explosionDist = Math.floor(value);
-	}
+	});
 
 	rotateHandle.onChange(function(value) {
 		//round down to nearest 90 deg
