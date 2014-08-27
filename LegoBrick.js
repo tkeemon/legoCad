@@ -26,6 +26,7 @@ THREE.LegoBrick = function ( obj ) {
 	this.unitsLength = obj.unitsLength || 1;
 	this.unitsWidth = obj.unitsWidth || 1;
 	this.isThinPiece = obj.isThinPiece || false;
+	this.isSmoothPiece = obj.isSmoothPiece || false;
 	//var brickColor = obj.brickColor || 0xFF0000;
 	//var brickOpacity = obj.brickOpacity || 1;
 	this.brickRotation = obj.brickRotation || 0;
@@ -59,21 +60,24 @@ THREE.LegoBrick = function ( obj ) {
 	transMat.setPosition(new THREE.Vector3(transX,transY,transZ));
 	brick.merge(base,transMat);
 	
-	for(var xx=0; xx<this.unitsLength; xx++) {
-		for(var yy=0; yy<this.unitsWidth; yy++) {
-			var knob = new THREE.CylinderGeometry(knobRadius,knobRadius, this.depth+knobHeight, 10, 10, false);
-			
-			// transMat.identity(); //needed???
-			transMat.makeRotationX(Math.PI/2);
-			var knobStartX = knobRadius+1.6;
-			var knobStartY = knobRadius+1.6;
+	//only add knobs if lego piece isn't defined as smooth
+	if(!this.isSmoothPiece) {	
+		
+		for(var xx=0; xx<this.unitsLength; xx++) {
+			for(var yy=0; yy<this.unitsWidth; yy++) {
+				var knob = new THREE.CylinderGeometry(knobRadius,knobRadius, this.depth+knobHeight, 10, 10, false);
+				
+				// transMat.identity(); //needed???
+				transMat.makeRotationX(Math.PI/2);
+				var knobStartX = knobRadius+1.6;
+				var knobStartY = knobRadius+1.6;
 
-			transMat.setPosition(new THREE.Vector3(knobStartX+xx*legoUnitLength,knobStartY+yy*legoUnitLength,(this.depth+knobHeight)/2));
-			brick.merge(knob,transMat);
+				transMat.setPosition(new THREE.Vector3(knobStartX+xx*legoUnitLength,knobStartY+yy*legoUnitLength,(this.depth+knobHeight)/2));
+				brick.merge(knob,transMat);
 
+			}
 		}
 	}
-
 /*
 	var brickMesh = new THREE.Mesh(
 		brick,

@@ -335,6 +335,7 @@ function mouseDownPlaceBrick(event) {
 		var brickVals = {unitsLength:bx,
 						 unitsWidth:by,
 						 isThinPiece:effectController.brickThin,
+						 isSmoothPiece:effectController.brickSmooth,
 						 brickColor:effectController.brickColor,
 						 brickRotation:effectController.brickRotation,
 						};
@@ -391,6 +392,7 @@ function mouseMovePlaceBrick( event ) {
 		var brickVals = {unitsLength:bx,
 						 unitsWidth:by,
 						 isThinPiece:effectController.brickThin,
+						 isSmoothPiece:effectController.brickSmooth,
 						 brickColor:effectController.brickColor,
 						 brickRotation:effectController.brickRotation,
 						 //brickOpacity: .5,
@@ -473,7 +475,7 @@ function mouseDownSetGroundPlaneHeight(event) {
 
 //just creates json string for now
 function exportToJson() {
-	var VERSION = '0.0.1';
+	var VERSION = '0.0.2';
 	
 	var jsonObj = {};
 	jsonObj['version'] = VERSION;
@@ -489,6 +491,7 @@ function exportToJson() {
 				"unitsLength": geom.unitsLength,
 				"unitsWidth": geom.unitsWidth,
 				"thin": geom.isThinPiece,
+				"smooth":geom.isSmoothPiece,
 				"rotation": geom.brickRotation,
 				"color": brick.material.color,
 
@@ -503,7 +506,7 @@ function exportToJson() {
 
 //add specified bricks to scene from json
 function importJson(jsonStr) {
-	var VERSION = '0.0.1';
+	var VERSION = '0.0.2';
 	var json;
 	try {
 		json = JSON.parse(jsonStr);
@@ -630,6 +633,7 @@ function setupGui() {
 		brickSizeY:1,
 
 		brickThin:false,
+		brickSmooth:false,
 		brickColor:0x0000FF,
 		brickRotation:0,
 
@@ -673,6 +677,7 @@ function setupGui() {
 	f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
 	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
 	f.add(effectController,"brickThin").name("Thin brick?");
+	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
 
 	f = gui.addFolder("Load Brick Data JSON");
