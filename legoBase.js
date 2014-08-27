@@ -309,7 +309,13 @@ function calculateBrickMatrix(brickPosition) {
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(brickPosition.x,brickPosition.y,brickPosition.z),mat);
 
 		//for exploded view
-		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation((brickPosition.x/8)*(0),(brickPosition.y/8)*(0),(brickPosition.z/3.2)*(effectController.explosionDist)),mat);
+		var transVec = new THREE.Vector3(
+				(brickPosition.x/8)*(effectController.explodeXDist),
+				(brickPosition.y/8)*(effectController.explodeYDist),
+				(brickPosition.z/3.2)*(effectController.explodeZDist)
+			);
+		console.log(transVec);
+		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(transVec.x,transVec.y,transVec.z),mat);
 
 		return mat;
 }
@@ -333,6 +339,7 @@ function updateAllBrickPositions() {
 }
 
 function mouseDownPlaceBrick(event) {
+	//TODO - prevent/fix placing bricks when in exploded state
 	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
@@ -668,7 +675,10 @@ function setupGui() {
 		brickColor:0x0000FF,
 		brickRotation:0,
 
-		explosionDist:0,
+		explodeAll:0,
+		explodeXDist:0,
+		explodeYDist:0,
+		explodeZDist:0,
 
 		saveLabel:'',
 		saveData:function() {
@@ -714,7 +724,10 @@ function setupGui() {
 	f.addColor(effectController,"brickColor").name("Color");
 
 	f = gui.addFolder("Exploded View");
-	var expHandle = f.add(effectController,"explosionDist",0,10).step(1).name("Distance (mm)");
+	var expAll = f.add(effectController,'explodeAll',0,10).step(1).name("Distance (mm)");
+	var expX = f.add(effectController,"explodeXDist",0,10).step(1).name("X Distance (mm)");
+	var expY = f.add(effectController,"explodeYDist",0,10).step(1).name("Y Distance (mm)");
+	var expZ = f.add(effectController,"explodeZDist",0,10).step(1).name("Z Distance (mm)");
 
 	f = gui.addFolder("Load Brick Data JSON");
 	f.add(effectController,"loadLabel").name("JSON Data");
@@ -758,6 +771,7 @@ function setupGui() {
 		groundPlane.material.color = new THREE.Color(value);
 	});
 
+	//length control
 	lengthHandle.onChange(function(value) {
 		effectController.brickSizeX = Math.floor(value);
 	});
@@ -766,15 +780,36 @@ function setupGui() {
 		effectController.brickSizeY = Math.floor(value);
 	});
 
-	expHandle.onChange(function(value) {
-		effectController.explosionDist = Math.floor(value);
-		updateAllBrickPositions();
-	});
-
+	//rotation control
 	rotateHandle.onChange(function(value) {
 		//round down to nearest 90 deg
 		effectController.brickRotation = Math.floor(value/90) * 90;
 	});
+
+	//explosion control
+	//TODO - update GUI values when 'explodeAll' is used
+	expAll.onChange(function(value) {
+		effectController.explodeXDist = Math.floor(value);
+		effectController.explodeYDist = Math.floor(value);
+		effectController.explodeZDist = Math.floor(value);
+		updateAllBrickPositions();
+	});
+
+	expX.onChange(function(value) {
+		effectController.explodeXDist = Math.floor(value);
+		updateAllBrickPositions();
+	});
+
+	expY.onChange(function(value) {
+		effectController.explodeYDist = Math.floor(value);
+		updateAllBrickPositions();
+	});
+
+	expZ.onChange(function(value) {
+		effectController.explodeZDist = Math.floor(value);
+		updateAllBrickPositions();
+	});
+
 }
 init();
 setupGui();
