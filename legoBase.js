@@ -327,6 +327,10 @@ function mouseDownPlaceBrick(event) {
 		//if no intersection found
 		if(!intersection)
 			return;
+
+		//cant add to the top of a smooth piece
+		if(intersection.object.geometry.isSmoothPiece) 
+			return;
 		
 		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
 		if(!pos)
@@ -383,6 +387,10 @@ function mouseMovePlaceBrick( event ) {
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
+			return;
+
+		//cant add to the top of a smooth piece
+		if(intersection.object.geometry.isSmoothPiece) 
 			return;
 		
 		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
