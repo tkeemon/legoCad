@@ -681,8 +681,8 @@ function setupGui() {
 
 	f = gui.addFolder("Brick Placement");
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
-	f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
-	f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
+	var lengthHandle = f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
+	var widthHandle = f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
 	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"brickSmooth").name("Smooth top?");
@@ -728,6 +728,14 @@ function setupGui() {
 	});
 	gpc.onChange(function(value) { //color
 		groundPlane.material.color = new THREE.Color(value);
+	});
+
+	lengthHandle.onChange(function(value) {
+		effectController.brickSizeX = Math.floor(value);
+	});
+
+	widthHandle.onChange(function(value) {
+		effectController.brickSizeY = Math.floor(value);
 	});
 
 	rotateHandle.onChange(function(value) {
