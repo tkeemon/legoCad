@@ -308,11 +308,38 @@ function calculateBrickMatrix(brickPosition) {
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(4,4,0),mat);
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(brickPosition.x,brickPosition.y,brickPosition.z),mat);
 
+		//for exploded view
+		var transVec = new THREE.Vector3(
+				(brickPosition.x/8)*(effectController.explodeXDist),
+				(brickPosition.y/8)*(effectController.explodeYDist),
+				(brickPosition.z/3.2)*(effectController.explodeZDist)
+			);
+		console.log(transVec);
+		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(transVec.x,transVec.y,transVec.z),mat);
+
 		return mat;
 }
 
+//used by exploded view
+function updateAllBrickPositions() {
+	for(var x=1; x<bricks.length; x++) {
+		var brick = bricks[x];
+		
+		//calculate 0 exploded position based on segment positions
+
+		//take the 0 position from Mesh object
+		var pos = brick.position;
+
+		var newMat = calculateBrickMatrix(pos);
+
+		brick.matrixAutoUpdate = false;
+		brick.matrix.copy(newMat);
+		brick.matrixWorldNeedsUpdate = true;
+	}
+}
 
 function mouseDownPlaceBrick(event) {
+	//TODO - prevent/fix placing bricks when in exploded state
 	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
@@ -327,6 +354,10 @@ function mouseDownPlaceBrick(event) {
 		//if no intersection found
 		if(!intersection)
 			return;
+
+		//cant add to the top of a smooth piece
+		if(intersection.object.geometry.isSmoothPiece) 
+			return;
 		
 		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
 		if(!pos)
@@ -335,6 +366,7 @@ function mouseDownPlaceBrick(event) {
 		var brickVals = {unitsLength:bx,
 						 unitsWidth:by,
 						 isThinPiece:effectController.brickThin,
+						 isSmoothPiece:effectController.brickSmooth,
 						 brickColor:effectController.brickColor,
 						 brickRotation:effectController.brickRotation,
 						};
@@ -349,6 +381,9 @@ function mouseDownPlaceBrick(event) {
 
 		var leg = new THREE.Mesh(brickGeometry,
 						new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:false }));
+		
+		//set 0 position (to handle exploded view)
+		leg.position = pos;
 
 		//account for rotation
 		var mat = calculateBrickMatrix(pos);
@@ -383,6 +418,10 @@ function mouseMovePlaceBrick( event ) {
 		//if no intersection found
 		if(!intersection)
 			return;
+
+		//cant add to the top of a smooth piece
+		if(intersection.object.geometry.isSmoothPiece) 
+			return;
 		
 		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
 		if(!pos)
@@ -391,6 +430,7 @@ function mouseMovePlaceBrick( event ) {
 		var brickVals = {unitsLength:bx,
 						 unitsWidth:by,
 						 isThinPiece:effectController.brickThin,
+						 isSmoothPiece:effectController.brickSmooth,
 						 brickColor:effectController.brickColor,
 						 brickRotation:effectController.brickRotation,
 						 //brickOpacity: .5,
@@ -473,7 +513,7 @@ function mouseDownSetGroundPlaneHeight(event) {
 
 //just creates json string for now
 function exportToJson() {
-	var VERSION = '0.0.1';
+	var VERSION = '0.0.2';
 	
 	var jsonObj = {};
 	jsonObj['version'] = VERSION;
@@ -489,6 +529,7 @@ function exportToJson() {
 				"unitsLength": geom.unitsLength,
 				"unitsWidth": geom.unitsWidth,
 				"thin": geom.isThinPiece,
+				"smooth":geom.isSmoothPiece,
 				"rotation": geom.brickRotation,
 				"color": brick.material.color,
 
@@ -503,7 +544,7 @@ function exportToJson() {
 
 //add specified bricks to scene from json
 function importJson(jsonStr) {
-	var VERSION = '0.0.1';
+	var VERSION = '0.0.2';
 	var json;
 	try {
 		json = JSON.parse(jsonStr);
@@ -630,8 +671,14 @@ function setupGui() {
 		brickSizeY:1,
 
 		brickThin:false,
+		brickSmooth:false,
 		brickColor:0x0000FF,
 		brickRotation:0,
+
+		explodeAll:0,
+		explodeXDist:0,
+		explodeYDist:0,
+		explodeZDist:0,
 
 		saveLabel:'',
 		saveData:function() {
@@ -669,11 +716,18 @@ function setupGui() {
 
 	f = gui.addFolder("Brick Placement");
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
-	f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
-	f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
+	var lengthHandle = f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
+	var widthHandle = f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
 	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
 	f.add(effectController,"brickThin").name("Thin brick?");
+	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
+
+	f = gui.addFolder("Exploded View");
+	var expAll = f.add(effectController,'explodeAll',0,10).step(1).name("Distance (mm)");
+	var expX = f.add(effectController,"explodeXDist",0,10).step(1).name("X Distance (mm)");
+	var expY = f.add(effectController,"explodeYDist",0,10).step(1).name("Y Distance (mm)");
+	var expZ = f.add(effectController,"explodeZDist",0,10).step(1).name("Z Distance (mm)");
 
 	f = gui.addFolder("Load Brick Data JSON");
 	f.add(effectController,"loadLabel").name("JSON Data");
@@ -717,10 +771,45 @@ function setupGui() {
 		groundPlane.material.color = new THREE.Color(value);
 	});
 
+	//length control
+	lengthHandle.onChange(function(value) {
+		effectController.brickSizeX = Math.floor(value);
+	});
+
+	widthHandle.onChange(function(value) {
+		effectController.brickSizeY = Math.floor(value);
+	});
+
+	//rotation control
 	rotateHandle.onChange(function(value) {
 		//round down to nearest 90 deg
 		effectController.brickRotation = Math.floor(value/90) * 90;
 	});
+
+	//explosion control
+	//TODO - update GUI values when 'explodeAll' is used
+	expAll.onChange(function(value) {
+		effectController.explodeXDist = Math.floor(value);
+		effectController.explodeYDist = Math.floor(value);
+		effectController.explodeZDist = Math.floor(value);
+		updateAllBrickPositions();
+	});
+
+	expX.onChange(function(value) {
+		effectController.explodeXDist = Math.floor(value);
+		updateAllBrickPositions();
+	});
+
+	expY.onChange(function(value) {
+		effectController.explodeYDist = Math.floor(value);
+		updateAllBrickPositions();
+	});
+
+	expZ.onChange(function(value) {
+		effectController.explodeZDist = Math.floor(value);
+		updateAllBrickPositions();
+	});
+
 }
 init();
 setupGui();
