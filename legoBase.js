@@ -572,6 +572,7 @@ function importJson(jsonStr) {
 		var brickVals = {unitsLength:brick['unitsLength'],
 						 unitsWidth:brick['unitsWidth'],
 						 isThinPiece:brick['thin'],
+						 isSmoothPiece:brick['smooth'],
 						 // brickColor:brick['color'],
 						 // brickRotation:brick['rotation'],
 						};
