@@ -505,7 +505,6 @@ function mouseDownSetGroundPlaneHeight(event) {
 		var newHeight = brick.matrix.elements[14];
 
 		//update effectController and set groundPlane object's height
-		//TODO -automatically update groundPlaneHeight in gui
 		effectController.groundPlaneHeight = Math.round((newHeight+3.2)/3.2) - 1;
 		groundPlane.position.z = newHeight-3.2;
 	}
@@ -726,9 +725,9 @@ function setupGui() {
 
 	f = gui.addFolder("Exploded View");
 	var expAll = f.add(effectController,'explodeAll',0,10).step(1).name("Distance (mm)");
-	var expX = f.add(effectController,"explodeXDist",0,10).step(1).name("X Distance (mm)");
-	var expY = f.add(effectController,"explodeYDist",0,10).step(1).name("Y Distance (mm)");
-	var expZ = f.add(effectController,"explodeZDist",0,10).step(1).name("Z Distance (mm)");
+	var expX = f.add(effectController,"explodeXDist",0,10).step(1).name("X Distance (mm)").listen();
+	var expY = f.add(effectController,"explodeYDist",0,10).step(1).name("Y Distance (mm)").listen();
+	var expZ = f.add(effectController,"explodeZDist",0,10).step(1).name("Z Distance (mm)").listen();
 
 	f = gui.addFolder("Load Brick Data JSON");
 	f.add(effectController,"loadLabel").name("JSON Data");
@@ -788,7 +787,6 @@ function setupGui() {
 	});
 
 	//explosion control
-	//TODO - update GUI values when 'explodeAll' is used
 	expAll.onChange(function(value) {
 		effectController.explodeXDist = Math.floor(value);
 		effectController.explodeYDist = Math.floor(value);
