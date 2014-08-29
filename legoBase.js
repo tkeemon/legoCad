@@ -314,7 +314,7 @@ function calculateBrickMatrix(brickPosition) {
 				(brickPosition.y/8)*(effectController.explodeYDist),
 				(brickPosition.z/3.2)*(effectController.explodeZDist)
 			);
-		console.log(transVec);
+
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(transVec.x,transVec.y,transVec.z),mat);
 
 		return mat;
@@ -490,14 +490,14 @@ function mouseDownSelectBrick(event) {
 }
 
 function mouseDownSetGroundPlaneHeight(event) {
-	if(effectController.mouseState == "Set Groundplane Height") {
+	if(effectController.mouseState == "Set Ground Plane Height") {
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
 			return;
 		
 		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
-		
+
 		var brick = intersection.object;
 		if(brick==groundPlane) {
 			return;
@@ -710,7 +710,7 @@ function setupGui() {
 				["Place Brick","Select Brick","Rotate Camera", "Set Ground Plane Height"]).name("Mouse State");
 
 	f = gui.addFolder("Ground Plane");
-	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height");
+	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height").listen();
 	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
 	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
 	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
