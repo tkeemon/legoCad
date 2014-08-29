@@ -506,7 +506,7 @@ function mouseDownSetGroundPlaneHeight(event) {
 
 		//update effectController and set groundPlane object's height
 		//TODO -automatically update groundPlaneHeight in gui
-		effectController.groundPlaneHeight = Math.round((newHeight+3.2)/3.2);
+		effectController.groundPlaneHeight = Math.round((newHeight+3.2)/3.2) - 1;
 		groundPlane.position.z = newHeight-3.2;
 	}
 }
