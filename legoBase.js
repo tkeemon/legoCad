@@ -221,11 +221,18 @@ function drawHelpers() {
 */
 
 //list bricks
-function listAllObjects() {
+function listParts() {
 	console.log('num bricks: ' + bricks.length);
 	console.log('bricks:');
-	for(var x=0; x<bricks.length; x++) {
-		console.log(bricks[x]);
+	
+	//start collecting at x=1 to skip groundplane
+	//TDOO count and similar types of bricks
+	//TODO (4,2) size brick = (2,4) size brick rotated 90deg
+	for(var x=1; x<bricks.length; x++) {
+		var b = bricks[x].geometry;
+
+		var dims = {length:b.unitsLength,width:b.unitsWidth,smooth:b.isSmoothPiece,thin:b.isThinPiece};
+		console.log(dims);
 	}
 }
 
