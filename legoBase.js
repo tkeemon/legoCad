@@ -225,15 +225,34 @@ function listParts() {
 	console.log('num bricks: ' + bricks.length);
 	console.log('bricks:');
 	
+	partList = [];
 	//start collecting at x=1 to skip groundplane
 	//TDOO count and similar types of bricks
 	//TODO (4,2) size brick = (2,4) size brick rotated 90deg
 	for(var x=1; x<bricks.length; x++) {
 		var b = bricks[x].geometry;
 
-		var dims = {length:b.unitsLength,width:b.unitsWidth,smooth:b.isSmoothPiece,thin:b.isThinPiece};
-		console.log(dims);
+		var len1, len2, isSmooth, isThin;
+		if(b.unitsLength>b.unitsWidth) {
+			len1 = b.unitsLength;
+			len2 = b.unitsWidth;
+		}else {
+			len1 = b.unitsWidth;
+			len2 = b.unitsLength;
+		}
+
+		isSmooth = b.isSmoothPiece;
+		isThin = b.isThinPiece;
+
+		var dims = {length:len1,width:len2,smooth:isSmooth,thin:isThin};
+		if(!partList[dims]) {
+			partList[dims] = 0;
+		}
+		partList[dims]++;
+
 	}
+
+	return partList;
 }
 
 /**
