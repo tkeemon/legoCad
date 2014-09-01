@@ -62,6 +62,8 @@ function init() {
 
 	renderer.domElement.addEventListener('mousedown',mouseDownSetGroundPlaneHeight);
 
+	window.addEventListener('resize',windowResizeListener,false);
+
 	projector = new THREE.Projector();
 
 	fillScene();
@@ -534,6 +536,11 @@ function mouseDownSetGroundPlaneHeight(event) {
 		effectController.groundPlaneHeight = Math.round((newHeight+3.2)/3.2) - 1;
 		groundPlane.position.z = newHeight-3.2;
 	}
+}
+
+function windowResizeListener(event) {
+	console.log(event);
+	renderer.setSize(window.innerWidth,window.innerHeight);
 }
 
 //just creates json string for now
