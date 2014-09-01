@@ -468,7 +468,9 @@ function mouseMovePlaceBrick( event ) {
 			// return;
 
 		
-		var brickGeometry = new THREE.LegoBrick(brickVals);
+		// var brickGeometry = new THREE.LegoBrick(brickVals);
+		var brickGeometry = new THREE.SlopedBrick(brickVals); //passing in too many parameters
+
 
 		var leg = new THREE.Mesh(brickGeometry,
 						new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:true, opacity: .5 }));
@@ -748,6 +750,13 @@ function setupGui() {
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
+
+	f = gui.addFolder("Sloped Brick");
+	var lengthHandle = f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
+	var widthHandle = f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
+	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
+	f.addColor(effectController,"brickColor").name("Color");
+
 
 	f = gui.addFolder("Exploded View");
 	var expAll = f.add(effectController,'explodeAll',0,10).step(1).name("Distance (mm)");
