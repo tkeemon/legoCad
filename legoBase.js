@@ -62,6 +62,8 @@ function init() {
 
 	renderer.domElement.addEventListener('mousedown',mouseDownSetGroundPlaneHeight);
 
+	window.addEventListener('resize',windowResizeListener,false);
+
 	projector = new THREE.Projector();
 
 	fillScene();
@@ -221,12 +223,38 @@ function drawHelpers() {
 */
 
 //list bricks
-function listAllObjects() {
+function listParts() {
 	console.log('num bricks: ' + bricks.length);
 	console.log('bricks:');
-	for(var x=0; x<bricks.length; x++) {
-		console.log(bricks[x]);
+	
+	partList = [];
+	//start collecting at x=1 to skip groundplane
+	//TDOO count and similar types of bricks
+	//TODO (4,2) size brick = (2,4) size brick rotated 90deg
+	for(var x=1; x<bricks.length; x++) {
+		var b = bricks[x].geometry;
+
+		var len1, len2, isSmooth, isThin;
+		if(b.unitsLength>b.unitsWidth) {
+			len1 = b.unitsLength;
+			len2 = b.unitsWidth;
+		}else {
+			len1 = b.unitsWidth;
+			len2 = b.unitsLength;
+		}
+
+		isSmooth = b.isSmoothPiece;
+		isThin = b.isThinPiece;
+
+		var dims = {length:len1,width:len2,smooth:isSmooth,thin:isThin};
+		if(!partList[dims]) {
+			partList[dims] = 0;
+		}
+		partList[dims]++;
+
 	}
+
+	return partList;
 }
 
 /**
@@ -314,7 +342,7 @@ function calculateBrickMatrix(brickPosition) {
 				(brickPosition.y/8)*(effectController.explodeYDist),
 				(brickPosition.z/3.2)*(effectController.explodeZDist)
 			);
-		console.log(transVec);
+
 		mat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().makeTranslation(transVec.x,transVec.y,transVec.z),mat);
 
 		return mat;
@@ -490,14 +518,14 @@ function mouseDownSelectBrick(event) {
 }
 
 function mouseDownSetGroundPlaneHeight(event) {
-	if(effectController.mouseState == "Set Groundplane Height") {
+	if(effectController.mouseState == "Set Ground Plane Height") {
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
 			return;
 		
 		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
-		
+
 		var brick = intersection.object;
 		if(brick==groundPlane) {
 			return;
@@ -505,10 +533,14 @@ function mouseDownSetGroundPlaneHeight(event) {
 		var newHeight = brick.matrix.elements[14];
 
 		//update effectController and set groundPlane object's height
-		//TODO -automatically update groundPlaneHeight in gui
-		effectController.groundPlaneHeight = Math.round((newHeight+3.2)/3.2);
+		effectController.groundPlaneHeight = Math.round((newHeight+3.2)/3.2) - 1;
 		groundPlane.position.z = newHeight-3.2;
 	}
+}
+
+function windowResizeListener(event) {
+	console.log(event);
+	renderer.setSize(window.innerWidth,window.innerHeight);
 }
 
 //just creates json string for now
@@ -572,6 +604,7 @@ function importJson(jsonStr) {
 		var brickVals = {unitsLength:brick['unitsLength'],
 						 unitsWidth:brick['unitsWidth'],
 						 isThinPiece:brick['thin'],
+						 isSmoothPiece:brick['smooth'],
 						 // brickColor:brick['color'],
 						 // brickRotation:brick['rotation'],
 						};
@@ -709,7 +742,7 @@ function setupGui() {
 				["Place Brick","Select Brick","Rotate Camera", "Set Ground Plane Height"]).name("Mouse State");
 
 	f = gui.addFolder("Ground Plane");
-	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height");
+	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height").listen();
 	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
 	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
 	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
@@ -725,9 +758,9 @@ function setupGui() {
 
 	f = gui.addFolder("Exploded View");
 	var expAll = f.add(effectController,'explodeAll',0,10).step(1).name("Distance (mm)");
-	var expX = f.add(effectController,"explodeXDist",0,10).step(1).name("X Distance (mm)");
-	var expY = f.add(effectController,"explodeYDist",0,10).step(1).name("Y Distance (mm)");
-	var expZ = f.add(effectController,"explodeZDist",0,10).step(1).name("Z Distance (mm)");
+	var expX = f.add(effectController,"explodeXDist",0,10).step(1).name("X Distance (mm)").listen();
+	var expY = f.add(effectController,"explodeYDist",0,10).step(1).name("Y Distance (mm)").listen();
+	var expZ = f.add(effectController,"explodeZDist",0,10).step(1).name("Z Distance (mm)").listen();
 
 	f = gui.addFolder("Load Brick Data JSON");
 	f.add(effectController,"loadLabel").name("JSON Data");
@@ -787,7 +820,6 @@ function setupGui() {
 	});
 
 	//explosion control
-	//TODO - update GUI values when 'explodeAll' is used
 	expAll.onChange(function(value) {
 		effectController.explodeXDist = Math.floor(value);
 		effectController.explodeYDist = Math.floor(value);
