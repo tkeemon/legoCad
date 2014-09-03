@@ -209,25 +209,12 @@ function printCameraData() {
 	console.log("center: " + camera.center);
 }
 
-//Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
-//COPIED--- NOT USED
-/*
-function drawHelpers() {
-	Coordinates.drawGround({size:10000});
-	Coordinates.drawGrid({size:10000,scale:0.01});
-	Coordinates.drawGrid({size:10000,scale:0.01, orientation:"y"});
-	Coordinates.drawGrid({size:10000,scale:0.01, orientation:"z"});
-	Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
-	
-}
-*/
-
 //list bricks
 function listParts() {
 	console.log('num bricks: ' + bricks.length);
 	console.log('bricks:');
 	
-	partList = [];
+	var partList = [];
 	//start collecting at x=1 to skip groundplane
 	//TDOO count and similar types of bricks
 	//TODO (4,2) size brick = (2,4) size brick rotated 90deg
@@ -284,7 +271,7 @@ function findIntersectingBrick(mx,my) {
 	if ( intersects.length > 0 ) {
 		// console.log('found obj: ' + intersects[0]);
 		// console.log(intersects[0]);
-		// var pos = intersects[0].object.position;
+
 		return intersects[0];
 	}
 	return undefined;
@@ -371,13 +358,9 @@ function mouseDownPlaceBrick(event) {
 	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
-		//console.log(event);
-
 		var bx = Math.floor(effectController.brickSizeX);
 		var by = Math.floor(effectController.brickSizeY);
 		
-		//listAllObjects();
-
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
@@ -435,13 +418,9 @@ function mouseMovePlaceBrick( event ) {
     if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
-		//console.log(event);
-
 		var bx = Math.floor(effectController.brickSizeX);
 		var by = Math.floor(effectController.brickSizeY);
 		
-		//listAllObjects();
-
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
@@ -461,7 +440,6 @@ function mouseMovePlaceBrick( event ) {
 						 isSmoothPiece:effectController.brickSmooth,
 						 brickColor:effectController.brickColor,
 						 brickRotation:effectController.brickRotation,
-						 //brickOpacity: .5,
 						};
 
 		//TODO - apply some sort of texture to transparent brick that can't be placed
