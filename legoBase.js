@@ -732,7 +732,7 @@ function setupGui() {
 	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"brickSmooth").name("Smooth top?");
-	f.addColor(effectController,"brickColor").name("Color");
+	var brickColorHandle = f.addColor(effectController,"brickColor").name("Color");
 
 	f = gui.addFolder("Exploded View");
 	var expAll = f.add(effectController,'explodeAll',0,10).step(1).name("Distance (mm)");
@@ -795,6 +795,13 @@ function setupGui() {
 	rotateHandle.onChange(function(value) {
 		//round down to nearest 90 deg
 		effectController.brickRotation = Math.floor(value/90) * 90;
+	});
+
+	brickColorHandle.onChange(function(value) {
+		console.log(value);
+		for(var x=0; x<selectedBricks.length; x++) {
+			selectedBricks[x].material.color = new THREE.Color(value);
+		}
 	});
 
 	//explosion control
