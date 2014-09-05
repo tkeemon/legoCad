@@ -668,7 +668,10 @@ function render() {
 	renderer.render(scene, camera);
 }
 
-//TODO implement
+//TODO update brickMap on change
+//		TODO prevent moving out of bounds
+//		TODO prevent bricks from overlapping
+//	can all three be accomplished by updating brickMap???
 function moveSelectedBrick(xDelta, yDelta, zDelta) {
 
 	var disp = new THREE.Vector3(xDelta*8,yDelta*8,zDelta*3.2);
@@ -708,12 +711,12 @@ function setupGui() {
 		explodeYDist:0,
 		explodeZDist:0,
 
-		plusXPosition: function(){moveSelectedBrick(1,0)},
-		minusXPosition: function(){moveSelectedBrick()},
-		plusYPosition: function(){moveSelectedBrick()},
-		minusYPosition: function(){moveSelectedBrick()},
-		plusZPosition: function(){moveSelectedBrick()}, 
-		minusZPosition: function(){moveSelectedBrick()},
+		plusXPosition: function(){moveSelectedBrick(1,0,0)},
+		minusXPosition: function(){moveSelectedBrick(-1,0,0)},
+		plusYPosition: function(){moveSelectedBrick(0,1,0)},
+		minusYPosition: function(){moveSelectedBrick(0,-1,0)},
+		plusZPosition: function(){moveSelectedBrick(0,0,1)}, 
+		minusZPosition: function(){moveSelectedBrick(0,0,-1)},
 
 		saveLabel:'',
 		saveData:function() {
