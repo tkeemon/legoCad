@@ -668,6 +668,11 @@ function render() {
 	renderer.render(scene, camera);
 }
 
+//TODO implement
+function moveSelectedBrick() {
+	console.log('not implemented');
+}
+
 function setupGui() {
 
 	effectController = {
@@ -690,6 +695,13 @@ function setupGui() {
 		explodeXDist:0,
 		explodeYDist:0,
 		explodeZDist:0,
+
+		plusXPosition: function(){moveSelectedBrick()},
+		minusXPosition: function(){moveSelectedBrick()},
+		plusYPosition: function(){moveSelectedBrick()},
+		minusYPosition: function(){moveSelectedBrick()},
+		plusZPosition: function(){moveSelectedBrick()}, 
+		minusZPosition: function(){moveSelectedBrick()},
 
 		saveLabel:'',
 		saveData:function() {
@@ -733,6 +745,15 @@ function setupGui() {
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	var brickColorHandle = f.addColor(effectController,"brickColor").name("Color");
+
+	f = gui.addFolder("Edit Brick");
+	var plusXPositionHandle = f.add(effectController,"plusXPosition").name("+X");
+	var minusXPositionHandle = f.add(effectController,"minusXPosition").name("-X");
+	var plusYPositionHandle = f.add(effectController,"plusYPosition").name("+Y");
+	var minusYPositionHandle = f.add(effectController,"minusYPosition").name("-Y");
+	var plusZPositionHandle = f.add(effectController,"plusZPosition").name("+Z");
+	var minusZPositionHandle = f.add(effectController,"minusZPosition").name("-Z");
+	var editColorHandle = f.addColor(effectController,"brickColor").name("Color");
 
 	f = gui.addFolder("Exploded View");
 	var expAll = f.add(effectController,'explodeAll',0,10).step(1).name("Distance (mm)");
@@ -802,6 +823,11 @@ function setupGui() {
 		for(var x=0; x<selectedBricks.length; x++) {
 			selectedBricks[x].material.color = new THREE.Color(value);
 		}
+	});
+
+	//TODO implement
+	editColorHandle.onChange(function(value) {
+		console.log('not implemented yet');
 	});
 
 	//explosion control
