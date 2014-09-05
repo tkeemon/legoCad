@@ -669,8 +669,20 @@ function render() {
 }
 
 //TODO implement
-function moveSelectedBrick() {
-	console.log('not implemented');
+function moveSelectedBrick(xDelta, yDelta, zDelta) {
+
+	var disp = new THREE.Vector3(xDelta*8,yDelta*8,zDelta*3.2);
+	for(var i=0; i<selectedBricks.length; i++) {
+		var b = selectedBricks[i];
+		var currentMatrix = b.matrix;
+
+		var newMat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().setPosition(disp), currentMatrix);
+
+		b.matrixAutoUpdate = false;
+		b.matrix.copy(newMat);
+		b.matrixWorldNeedsUpdate = true;
+
+	}
 }
 
 function setupGui() {
@@ -696,7 +708,7 @@ function setupGui() {
 		explodeYDist:0,
 		explodeZDist:0,
 
-		plusXPosition: function(){moveSelectedBrick()},
+		plusXPosition: function(){moveSelectedBrick(1,0)},
 		minusXPosition: function(){moveSelectedBrick()},
 		plusYPosition: function(){moveSelectedBrick()},
 		minusYPosition: function(){moveSelectedBrick()},
