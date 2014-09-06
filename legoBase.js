@@ -685,6 +685,11 @@ function moveSelectedBrick(xDelta, yDelta, zDelta) {
 		b.matrix.copy(newMat);
 		b.matrixWorldNeedsUpdate = true;
 
+		//update position
+		var newPos = new THREE.Vector3();
+		newPos.addVectors(b.position,disp);
+		b.position = newPos;
+
 	}
 }
 
