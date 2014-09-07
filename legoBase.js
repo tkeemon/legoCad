@@ -694,7 +694,19 @@ function moveSelectedBrick(xDelta, yDelta, zDelta) {
 }
 
 function rotateSelectedBrick(deg) {
-	console.log('not implemented');
+
+	for(var x=0; x<selectedBricks.length; x++) {
+		var b = selectedBricks[x];
+		var currentMatrix = b.matrix;
+
+		effectController.brickRotation += deg;
+		effectController.brickRotation %= 360;
+
+		var newMat = calculateBrickMatrix(b.position);
+		b.matrixAutoUpdate = false;
+		b.matrix.copy(newMat);
+		b.matrixWorldNeedsUpdate = true;
+	}
 }
 
 function setupGui() {
