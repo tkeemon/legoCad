@@ -764,7 +764,7 @@ function setupGui() {
 	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"brickSmooth").name("Smooth top?");
-	var brickColorHandle = f.addColor(effectController,"brickColor").name("Color");
+	f.addColor(effectController,"brickColor").name("Color");
 
 	f = gui.addFolder("Edit Brick");
 	var plusXPositionHandle = f.add(effectController,"plusXPosition").name("+X");
@@ -838,16 +838,10 @@ function setupGui() {
 		effectController.brickRotation = Math.floor(value/90) * 90;
 	});
 
-	brickColorHandle.onChange(function(value) {
-		console.log(value);
+	editColorHandle.onChange(function(value) {
 		for(var x=0; x<selectedBricks.length; x++) {
 			selectedBricks[x].material.color = new THREE.Color(value);
 		}
-	});
-
-	//TODO implement
-	editColorHandle.onChange(function(value) {
-		console.log('not implemented yet');
 	});
 
 	//explosion control
