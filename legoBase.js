@@ -693,6 +693,10 @@ function moveSelectedBrick(xDelta, yDelta, zDelta) {
 	}
 }
 
+function rotateSelectedBrick(deg) {
+	console.log('not implemented');
+}
+
 function setupGui() {
 
 	effectController = {
@@ -722,7 +726,7 @@ function setupGui() {
 		minusYPosition: function(){moveSelectedBrick(0,-1,0)},
 		plusZPosition: function(){moveSelectedBrick(0,0,1)}, 
 		minusZPosition: function(){moveSelectedBrick(0,0,-1)},
-
+		rotationPlus90: function(){rotateSelectedBrick(90)},
 		saveLabel:'',
 		saveData:function() {
 			var jsonStr = JSON.stringify(exportToJson());
@@ -766,6 +770,7 @@ function setupGui() {
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
 
+	//TODO add rotation???
 	f = gui.addFolder("Edit Brick");
 	var plusXPositionHandle = f.add(effectController,"plusXPosition").name("+X");
 	var minusXPositionHandle = f.add(effectController,"minusXPosition").name("-X");
@@ -773,6 +778,7 @@ function setupGui() {
 	var minusYPositionHandle = f.add(effectController,"minusYPosition").name("-Y");
 	var plusZPositionHandle = f.add(effectController,"plusZPosition").name("+Z");
 	var minusZPositionHandle = f.add(effectController,"minusZPosition").name("-Z");
+	f.add(effectController,"rotationPlus90").name("Rotation +90 deg")
 	var editColorHandle = f.addColor(effectController,"brickColor").name("Color");
 
 	f = gui.addFolder("Exploded View");
