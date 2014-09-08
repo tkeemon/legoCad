@@ -719,6 +719,7 @@ function setupGui() {
 		groundPlaneHeight:0,
 		groundPlaneVisible:true,
 		groundPlaneOpacity:1.0,
+		groundPlaneWireframe:false,
 		groundPlaneColor:0xFF0000,
 
 		brickSizeX:1,
@@ -774,6 +775,7 @@ function setupGui() {
 	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height").listen();
 	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
 	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
+	var gpwf = f.add(effectController,"groundPlaneWireframe").name("Wireframe?");
 	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
 
 	f = gui.addFolder("Brick Placement");
@@ -840,6 +842,9 @@ function setupGui() {
 	});
 	gpt.onChange(function(value) { //transparancy
 		groundPlane.material.opacity = value;
+	});
+	gpwf.onChange(function(value) {
+		groundPlane.material.wireframe = value;
 	});
 	gpc.onChange(function(value) { //color
 		groundPlane.material.color = new THREE.Color(value);
