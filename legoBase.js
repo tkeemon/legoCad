@@ -722,6 +722,8 @@ function setupGui() {
 		groundPlaneWireframe:false,
 		groundPlaneColor:0xFF0000,
 
+		wireframeAllBricks:false,
+
 		brickSizeX:1,
 		brickSizeY:1,
 
@@ -777,6 +779,9 @@ function setupGui() {
 	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
 	var gpwf = f.add(effectController,"groundPlaneWireframe").name("Wireframe?");
 	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
+
+	f = gui.addFolder("Global");
+	var wireFrameHandle = f.add(effectController,"wireframeAllBricks").name("Wireframe?");
 
 	f = gui.addFolder("Brick Placement");
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
@@ -848,6 +853,13 @@ function setupGui() {
 	});
 	gpc.onChange(function(value) { //color
 		groundPlane.material.color = new THREE.Color(value);
+	});
+
+	//global
+	wireFrameHandle.onChange(function(value) {
+		for(var x=1; x<bricks.length; x++) {
+			bricks[x].material.wireframe = value;
+		}
 	});
 
 	//length control
