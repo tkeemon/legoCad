@@ -14,6 +14,7 @@ var aspectRatio;
 var planeSize = 100; //mm
 var groundPlaneSize = 20;
 var groundPlane;
+var backgroundColor;
 
 var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
@@ -25,13 +26,14 @@ var brickMap;
 var brickIdCount = 1;
 
 function init() {
+	backgroundColor = 0x00f0ff;
 
 	// RENDERER
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
 	renderer.setSize(canvasWidth, canvasHeight);
-	renderer.setClearColor(0x808080,1.0);
+	renderer.setClearColor(backgroundColor,1.0);
 
 	var container = document.getElementById('container');
 	container.appendChild( renderer.domElement );
@@ -723,6 +725,7 @@ function setupGui() {
 		groundPlaneColor:0xFF0000,
 
 		wireframeAllBricks:false,
+		backgroundColor:0x00f0ff,
 
 		brickSizeX:1,
 		brickSizeY:1,
@@ -782,6 +785,7 @@ function setupGui() {
 
 	f = gui.addFolder("Global");
 	var wireFrameHandle = f.add(effectController,"wireframeAllBricks").name("Wireframe?");
+	var backgroundColorHandle = f.addColor(effectController,"backgroundColor").name("Background Color");
 
 	f = gui.addFolder("Brick Placement");
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
@@ -860,6 +864,10 @@ function setupGui() {
 		for(var x=1; x<bricks.length; x++) {
 			bricks[x].material.wireframe = value;
 		}
+	});
+
+	backgroundColorHandle.onChange(function(value) {
+		renderer.setClearColor(value,1.0);
 	});
 
 	//length control
