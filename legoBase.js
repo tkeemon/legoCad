@@ -26,7 +26,7 @@ var brickMap;
 var brickIdCount = 1;
 
 function init() {
-	backgroundColor = 0x00f0ff;
+	backgroundColor = 0x808080;
 
 	// RENDERER
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -725,7 +725,7 @@ function setupGui() {
 		groundPlaneColor:0xFF0000,
 
 		wireframeAllBricks:false,
-		backgroundColor:0x00f0ff,
+		backgroundColor:0x808080,
 
 		brickSizeX:1,
 		brickSizeY:1,
@@ -796,7 +796,6 @@ function setupGui() {
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
 
-	//TODO add rotation???
 	f = gui.addFolder("Edit Brick");
 	var plusXPositionHandle = f.add(effectController,"plusXPosition").name("+X");
 	var minusXPositionHandle = f.add(effectController,"minusXPosition").name("-X");
