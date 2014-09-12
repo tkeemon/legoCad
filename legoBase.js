@@ -14,6 +14,7 @@ var aspectRatio;
 var planeSize = 100; //mm
 var groundPlaneSize = 20;
 var groundPlane;
+var backgroundColor;
 
 var canvasWidth = window.innerWidth;
 var canvasHeight = window.innerHeight;
@@ -25,13 +26,14 @@ var brickMap;
 var brickIdCount = 1;
 
 function init() {
+	backgroundColor = 0x808080;
 
 	// RENDERER
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
 	renderer.setSize(canvasWidth, canvasHeight);
-	renderer.setClearColor(0x808080,1.0);
+	renderer.setClearColor(backgroundColor,1.0);
 
 	var container = document.getElementById('container');
 	container.appendChild( renderer.domElement );
@@ -209,25 +211,12 @@ function printCameraData() {
 	console.log("center: " + camera.center);
 }
 
-//Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
-//COPIED--- NOT USED
-/*
-function drawHelpers() {
-	Coordinates.drawGround({size:10000});
-	Coordinates.drawGrid({size:10000,scale:0.01});
-	Coordinates.drawGrid({size:10000,scale:0.01, orientation:"y"});
-	Coordinates.drawGrid({size:10000,scale:0.01, orientation:"z"});
-	Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
-	
-}
-*/
-
 //list bricks
 function listParts() {
 	console.log('num bricks: ' + bricks.length);
 	console.log('bricks:');
 	
-	partList = [];
+	var partList = [];
 	//start collecting at x=1 to skip groundplane
 	//TDOO count and similar types of bricks
 	//TODO (4,2) size brick = (2,4) size brick rotated 90deg
@@ -284,7 +273,7 @@ function findIntersectingBrick(mx,my) {
 	if ( intersects.length > 0 ) {
 		// console.log('found obj: ' + intersects[0]);
 		// console.log(intersects[0]);
-		// var pos = intersects[0].object.position;
+
 		return intersects[0];
 	}
 	return undefined;
@@ -371,13 +360,9 @@ function mouseDownPlaceBrick(event) {
 	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
-		//console.log(event);
-
 		var bx = Math.floor(effectController.brickSizeX);
 		var by = Math.floor(effectController.brickSizeY);
 		
-		//listAllObjects();
-
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
@@ -435,13 +420,9 @@ function mouseMovePlaceBrick( event ) {
     if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
-		//console.log(event);
-
 		var bx = Math.floor(effectController.brickSizeX);
 		var by = Math.floor(effectController.brickSizeY);
 		
-		//listAllObjects();
-
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
@@ -461,7 +442,6 @@ function mouseMovePlaceBrick( event ) {
 						 isSmoothPiece:effectController.brickSmooth,
 						 brickColor:effectController.brickColor,
 						 brickRotation:effectController.brickRotation,
-						 //brickOpacity: .5,
 						};
 
 		//TODO - apply some sort of texture to transparent brick that can't be placed
@@ -690,6 +670,49 @@ function render() {
 	renderer.render(scene, camera);
 }
 
+//TODO update brickMap on change
+//		TODO prevent moving out of bounds
+//		TODO prevent bricks from overlapping
+//	can all three be accomplished by updating brickMap???
+function moveSelectedBrick(xDelta, yDelta, zDelta) {
+
+	var disp = new THREE.Vector3(xDelta*8,yDelta*8,zDelta*3.2);
+	for(var i=0; i<selectedBricks.length; i++) {
+		var b = selectedBricks[i];
+		var currentMatrix = b.matrix;
+
+		var newMat = new THREE.Matrix4().multiplyMatrices(new THREE.Matrix4().setPosition(disp), currentMatrix);
+
+		b.matrixAutoUpdate = false;
+		b.matrix.copy(newMat);
+		b.matrixWorldNeedsUpdate = true;
+
+		//update position
+		var newPos = new THREE.Vector3();
+		newPos.addVectors(b.position,disp);
+		b.position = newPos;
+
+	}
+}
+
+//TODO - reset effect controller back to what it used to be
+//TOOD - make sure current value for effect controller doesn't affect rotation
+function rotateSelectedBrick(deg) {
+
+	for(var x=0; x<selectedBricks.length; x++) {
+		var b = selectedBricks[x];
+		var currentMatrix = b.matrix;
+
+		effectController.brickRotation += deg;
+		effectController.brickRotation %= 360;
+
+		var newMat = calculateBrickMatrix(b.position);
+		b.matrixAutoUpdate = false;
+		b.matrix.copy(newMat);
+		b.matrixWorldNeedsUpdate = true;
+	}
+}
+
 function setupGui() {
 
 	effectController = {
@@ -698,7 +721,11 @@ function setupGui() {
 		groundPlaneHeight:0,
 		groundPlaneVisible:true,
 		groundPlaneOpacity:1.0,
+		groundPlaneWireframe:false,
 		groundPlaneColor:0xFF0000,
+
+		wireframeAllBricks:false,
+		backgroundColor:0x808080,
 
 		brickSizeX:1,
 		brickSizeY:1,
@@ -713,6 +740,14 @@ function setupGui() {
 		explodeYDist:0,
 		explodeZDist:0,
 
+		plusXPosition: function(){moveSelectedBrick(1,0,0);},
+		minusXPosition: function(){moveSelectedBrick(-1,0,0);},
+		plusYPosition: function(){moveSelectedBrick(0,1,0);},
+		minusYPosition: function(){moveSelectedBrick(0,-1,0);},
+		plusZPosition: function(){moveSelectedBrick(0,0,1);}, 
+		minusZPosition: function(){moveSelectedBrick(0,0,-1);},
+		rotationPlus90: function(){rotateSelectedBrick(90);},
+		rotationMinus90: function(){rotateSelectedBrick(-90);},
 		saveLabel:'',
 		saveData:function() {
 			var jsonStr = JSON.stringify(exportToJson());
@@ -745,7 +780,12 @@ function setupGui() {
 	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height").listen();
 	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
 	var gpt = f.add(effectController,"groundPlaneOpacity",0,1).name("Opacity"); 
+	var gpwf = f.add(effectController,"groundPlaneWireframe").name("Wireframe?");
 	var gpc = f.addColor(effectController,"groundPlaneColor").name("Color");
+
+	f = gui.addFolder("Global");
+	var wireFrameHandle = f.add(effectController,"wireframeAllBricks").name("Wireframe?");
+	var backgroundColorHandle = f.addColor(effectController,"backgroundColor").name("Background Color");
 
 	f = gui.addFolder("Brick Placement");
 	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
@@ -755,6 +795,17 @@ function setupGui() {
 	f.add(effectController,"brickThin").name("Thin brick?");
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
+
+	f = gui.addFolder("Edit Brick");
+	var plusXPositionHandle = f.add(effectController,"plusXPosition").name("+X");
+	var minusXPositionHandle = f.add(effectController,"minusXPosition").name("-X");
+	var plusYPositionHandle = f.add(effectController,"plusYPosition").name("+Y");
+	var minusYPositionHandle = f.add(effectController,"minusYPosition").name("-Y");
+	var plusZPositionHandle = f.add(effectController,"plusZPosition").name("+Z");
+	var minusZPositionHandle = f.add(effectController,"minusZPosition").name("-Z");
+	f.add(effectController,"rotationPlus90").name("Rotation +90 deg")
+	f.add(effectController,"rotationMinus90").name("Rotation -90 deg")	
+	var editColorHandle = f.addColor(effectController,"brickColor").name("Color");
 
 	f = gui.addFolder("Exploded View");
 	var expAll = f.add(effectController,'explodeAll',0,10).step(1).name("Distance (mm)");
@@ -800,8 +851,22 @@ function setupGui() {
 	gpt.onChange(function(value) { //transparancy
 		groundPlane.material.opacity = value;
 	});
+	gpwf.onChange(function(value) {
+		groundPlane.material.wireframe = value;
+	});
 	gpc.onChange(function(value) { //color
 		groundPlane.material.color = new THREE.Color(value);
+	});
+
+	//global
+	wireFrameHandle.onChange(function(value) {
+		for(var x=1; x<bricks.length; x++) {
+			bricks[x].material.wireframe = value;
+		}
+	});
+
+	backgroundColorHandle.onChange(function(value) {
+		renderer.setClearColor(value,1.0);
 	});
 
 	//length control
@@ -817,6 +882,12 @@ function setupGui() {
 	rotateHandle.onChange(function(value) {
 		//round down to nearest 90 deg
 		effectController.brickRotation = Math.floor(value/90) * 90;
+	});
+
+	editColorHandle.onChange(function(value) {
+		for(var x=0; x<selectedBricks.length; x++) {
+			selectedBricks[x].material.color = new THREE.Color(value);
+		}
 	});
 
 	//explosion control
