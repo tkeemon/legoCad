@@ -355,7 +355,17 @@ function updateAllBrickPositions() {
 	}
 }
 
+function checkIfExploded() {
+	return effectController.explodeAll > 0 ||
+			effectController.explodeXDist > 0 ||
+			effectController.explodeYDist > 0 ||
+			effectController.explodeZDist > 0;						
+}
+
 function mouseDownPlaceBrick(event) {
+	if(checkIfExploded()) {
+		return;
+	}
 	//TODO - prevent/fix placing bricks when in exploded state
 	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
