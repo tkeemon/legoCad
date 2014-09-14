@@ -356,8 +356,7 @@ function updateAllBrickPositions() {
 }
 
 function checkIfExploded() {
-	return effectController.explodeAll > 0 ||
-			effectController.explodeXDist > 0 ||
+	return effectController.explodeXDist > 0 ||
 			effectController.explodeYDist > 0 ||
 			effectController.explodeZDist > 0;						
 }
