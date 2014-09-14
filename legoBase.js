@@ -355,14 +355,14 @@ function updateAllBrickPositions() {
 	}
 }
 
-function checkIfExploded() {
+function isExplodedCheck() {
 	return effectController.explodeXDist > 0 ||
 			effectController.explodeYDist > 0 ||
 			effectController.explodeZDist > 0;						
 }
 
 function mouseDownPlaceBrick(event) {
-	if(checkIfExploded()) {
+	if(isExplodedCheck()) {
 		return;
 	}
 	//TODO - prevent/fix placing bricks when in exploded state
@@ -424,6 +424,10 @@ function mouseMovePlaceBrick( event ) {
 	while(tempBricks.length > 0) {
 		var b = tempBricks.pop();
 		scene.remove(b);
+	}
+
+	if(checkIfExploded()) {
+		return;
 	}
 
     if(effectController.mouseState == "Place Brick") {
