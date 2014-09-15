@@ -426,7 +426,7 @@ function mouseMovePlaceBrick( event ) {
 		scene.remove(b);
 	}
 
-	if(checkIfExploded()) {
+	if(isExplodedCheck()) {
 		return;
 	}
 
@@ -753,6 +753,15 @@ function setupGui() {
 		explodeYDist:0,
 		explodeZDist:0,
 
+		//TODO update brickMap
+		//TODO remove from 'bricks' array
+		deleteSelectedBrick: function() {
+			for(var x=0; x<selectedBricks.length; x++) {
+				var b = selectedBricks[x];
+				console.log(b);
+				scene.remove(b);
+			}
+		},
 		plusXPosition: function(){moveSelectedBrick(1,0,0);},
 		minusXPosition: function(){moveSelectedBrick(-1,0,0);},
 		plusYPosition: function(){moveSelectedBrick(0,1,0);},
@@ -809,7 +818,9 @@ function setupGui() {
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
 
+	//TODO - delete brick
 	f = gui.addFolder("Edit Brick");
+	f.add(effectController,"deleteSelectedBrick").name("Delete brick(s)");
 	var plusXPositionHandle = f.add(effectController,"plusXPosition").name("+X");
 	var minusXPositionHandle = f.add(effectController,"minusXPosition").name("-X");
 	var plusYPositionHandle = f.add(effectController,"plusYPosition").name("+Y");
