@@ -113,6 +113,20 @@ function initBrickMap() {
 	}
 }
 
+function printBrickMap() {
+	for(var x=0; x<brickMap.length; x++) {
+		for(var y=0; y<brickMap[x].length; y++) {
+			if(brickMap[x][y].length > 1 || brickMap[x][y][0] > 0) {
+				console.log("( " + x + ", " + y + " )" + brickMap[x][y]);
+			}
+		}
+	}
+}
+
+function deleteFromBrickMap(num) {
+
+}
+
 
 function isValidBrickPosition(pos,brickVals) {
 	var xStart, yStart, xDist, yDist;
