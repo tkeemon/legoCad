@@ -123,8 +123,17 @@ function printBrickMap() {
 	}
 }
 
+//TODO additional function to delete brick at location (x,y,z)
 function deleteFromBrickMap(num) {
-
+	for(var x=0; x<brickMap.length; x++) {
+		for(var y=0; y<brickMap[x].length; y++) {
+			for(var z=0; z<brickMap[x][y].length; z++) {
+				if(brickMap[x][y][z] == num) {
+					brickMap[x][y][z] = 0;
+				}
+			}
+		}
+	}
 }
 
 
@@ -379,7 +388,7 @@ function mouseDownPlaceBrick(event) {
 	if(isExplodedCheck()) {
 		return;
 	}
-	//TODO - prevent/fix placing bricks when in exploded state
+
 	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
