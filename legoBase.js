@@ -123,7 +123,6 @@ function printBrickMap() {
 	}
 }
 
-//TODO additional function to delete brick at location (x,y,z)
 function deleteFromBrickMap(num) {
 	for(var x=0; x<brickMap.length; x++) {
 		for(var y=0; y<brickMap[x].length; y++) {
@@ -133,6 +132,16 @@ function deleteFromBrickMap(num) {
 				}
 			}
 		}
+	}
+}
+
+function deleteBrickAt(xLoc, yLoc, zLoc) {
+	var num = brickMap[xLoc][yLoc][zLoc];
+	if(num > 0) {
+		deleteFromBrickMap(num);
+	}else {
+		//throw error
+		console.log('no brick at location: ' + xLoc, + ', ' + yLoc + ', ' + zLoc);
 	}
 }
 
