@@ -145,6 +145,14 @@ function deleteBrickAt(xLoc, yLoc, zLoc) {
 	}
 }
 
+function addBrickToScene(posX, posY, posZ, length, width, isThin, rotation, color) {
+
+}
+
+function removeBrickFromScene() {
+
+}
+
 
 function isValidBrickPosition(pos,brickVals) {
 	var xStart, yStart, xDist, yDist;
