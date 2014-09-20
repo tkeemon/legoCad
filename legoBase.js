@@ -145,8 +145,56 @@ function deleteBrickAt(xLoc, yLoc, zLoc) {
 	}
 }
 
-function addBrickToScene(posX, posY, posZ, length, width, isThin, rotation, color) {
 
+function addBrickToScene(locX, locY) {
+	var bx = Math.floor(effectController.brickSizeX);
+	var by = Math.floor(effectController.brickSizeY);
+	
+	var intersection = findIntersectingBrick(locX,locY);
+	//if no intersection found
+	if(!intersection)
+		return;
+
+	//cant add to the top of a smooth piece
+	if(intersection.object.geometry.isSmoothPiece) 
+		return;
+	
+	var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
+	if(!pos)
+		return;
+
+	var brickVals = {unitsLength:bx,
+					 unitsWidth:by,
+					 isThinPiece:effectController.brickThin,
+					 isSmoothPiece:effectController.brickSmooth,
+					 brickColor:effectController.brickColor,
+					 brickRotation:effectController.brickRotation,
+					};
+	
+	//if the brick doesn't fit cleanly
+	if(!isValidBrickPosition(pos,brickVals)) 
+		return;
+
+	updateBrickMap(pos,brickVals);
+
+	var brickGeometry = new THREE.LegoBrick(brickVals);
+
+	var leg = new THREE.Mesh(brickGeometry,
+					new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:false }));
+	
+	//set 0 position (to handle exploded view)
+	leg.position = pos;
+
+	//account for rotation
+	var mat = calculateBrickMatrix(pos);
+
+	leg.matrixAutoUpdate = false;
+	leg.matrix.copy(mat);
+	leg.matrixWorldNeedsUpdate = true;
+
+	scene.add(leg);
+
+	bricks.push(leg);
 }
 
 function removeBrickFromScene() {
@@ -409,9 +457,9 @@ function mouseDownPlaceBrick(event) {
 	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
-		var bx = Math.floor(effectController.brickSizeX);
-		var by = Math.floor(effectController.brickSizeY);
-		
+		addBrickToScene(event.clientX, event.clientY);
+	}
+/*
 		var intersection = findIntersectingBrick(event.clientX,event.clientY);
 		//if no intersection found
 		if(!intersection)
@@ -457,7 +505,7 @@ function mouseDownPlaceBrick(event) {
 		scene.add(leg);
 	
 		bricks.push(leg);
-	}
+	}*/
 }
 
 function mouseMovePlaceBrick( event ) {
