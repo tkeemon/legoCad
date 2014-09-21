@@ -146,7 +146,7 @@ function deleteBrickAt(xLoc, yLoc, zLoc) {
 }
 
 
-function addBrickToScene(locX, locY) {
+function addBrickToScene(locX, locY, isTemp, isOpaque) {
 	var bx = Math.floor(effectController.brickSizeX);
 	var by = Math.floor(effectController.brickSizeY);
 	
@@ -175,12 +175,16 @@ function addBrickToScene(locX, locY) {
 	if(!isValidBrickPosition(pos,brickVals)) 
 		return;
 
-	updateBrickMap(pos,brickVals);
-
 	var brickGeometry = new THREE.LegoBrick(brickVals);
 
-	var leg = new THREE.Mesh(brickGeometry,
-					new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:false }));
+	var brickMaterial;
+	if(isOpaque) {
+		brickMaterial = new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:true, opacity:.5})
+	} else {
+		brickMaterial = new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:false })
+	}
+
+	var leg = new THREE.Mesh(brickGeometry, brickMaterial);
 	
 	//set 0 position (to handle exploded view)
 	leg.position = pos;
@@ -194,7 +198,12 @@ function addBrickToScene(locX, locY) {
 
 	scene.add(leg);
 
-	bricks.push(leg);
+	if(isTemp) {
+		tempBricks.push(leg);
+	}else {
+		bricks.push(leg);
+		updateBrickMap(pos,brickVals);
+	}
 }
 
 function removeBrickFromScene() {
@@ -457,55 +466,8 @@ function mouseDownPlaceBrick(event) {
 	if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
-		addBrickToScene(event.clientX, event.clientY);
+		addBrickToScene(event.clientX, event.clientY, false, false);
 	}
-/*
-		var intersection = findIntersectingBrick(event.clientX,event.clientY);
-		//if no intersection found
-		if(!intersection)
-			return;
-
-		//cant add to the top of a smooth piece
-		if(intersection.object.geometry.isSmoothPiece) 
-			return;
-		
-		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
-		if(!pos)
-			return;
-
-		var brickVals = {unitsLength:bx,
-						 unitsWidth:by,
-						 isThinPiece:effectController.brickThin,
-						 isSmoothPiece:effectController.brickSmooth,
-						 brickColor:effectController.brickColor,
-						 brickRotation:effectController.brickRotation,
-						};
-		
-		//if the brick doesn't fit cleanly
-		if(!isValidBrickPosition(pos,brickVals)) 
-			return;
-
-		updateBrickMap(pos,brickVals);
-
-		var brickGeometry = new THREE.LegoBrick(brickVals);
-
-		var leg = new THREE.Mesh(brickGeometry,
-						new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:false }));
-		
-		//set 0 position (to handle exploded view)
-		leg.position = pos;
-
-		//account for rotation
-		var mat = calculateBrickMatrix(pos);
-
-		leg.matrixAutoUpdate = false;
-		leg.matrix.copy(mat);
-		leg.matrixWorldNeedsUpdate = true;
-
-		scene.add(leg);
-	
-		bricks.push(leg);
-	}*/
 }
 
 function mouseMovePlaceBrick( event ) {
@@ -521,51 +483,7 @@ function mouseMovePlaceBrick( event ) {
     if(effectController.mouseState == "Place Brick") {
 		event.preventDefault(); //doesnt prevent call to OrbitControls???
 		
-		var bx = Math.floor(effectController.brickSizeX);
-		var by = Math.floor(effectController.brickSizeY);
-		
-		var intersection = findIntersectingBrick(event.clientX,event.clientY);
-		//if no intersection found
-		if(!intersection)
-			return;
-
-		//cant add to the top of a smooth piece
-		if(intersection.object.geometry.isSmoothPiece) 
-			return;
-		
-		var pos = calculateClosestBrickPosition(intersection.object,intersection.point);
-		if(!pos)
-			return;
-
-		var brickVals = {unitsLength:bx,
-						 unitsWidth:by,
-						 isThinPiece:effectController.brickThin,
-						 isSmoothPiece:effectController.brickSmooth,
-						 brickColor:effectController.brickColor,
-						 brickRotation:effectController.brickRotation,
-						};
-
-		//TODO - apply some sort of texture to transparent brick that can't be placed
-		//if the brick doesn't fit cleanly
-		// if(!isValidBrickPosition(pos,brickVals)) 
-			// return;
-
-		
-		var brickGeometry = new THREE.LegoBrick(brickVals);
-
-		var leg = new THREE.Mesh(brickGeometry,
-						new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:true, opacity: .5 }));
-		
-		//account for rotation
-		var mat = calculateBrickMatrix(pos);
-
-		leg.matrixAutoUpdate = false;
-		leg.matrix.copy(mat);
-		leg.matrixWorldNeedsUpdate = true;
-
-		scene.add(leg);
-	
-		tempBricks.push(leg);
+		addBrickToScene(event.clientX, event.clientY, true, true);
 	}
 }
 
