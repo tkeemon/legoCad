@@ -146,7 +146,7 @@ function deleteBrickAt(xLoc, yLoc, zLoc) {
 }
 
 
-function addBrickToScene(locX, locY, isTemp, isOpaque) {
+function addBrickToScene(locX, locY, isTemp, isTransparent) {
 	var bx = Math.floor(effectController.brickSizeX);
 	var by = Math.floor(effectController.brickSizeY);
 	
@@ -178,7 +178,7 @@ function addBrickToScene(locX, locY, isTemp, isOpaque) {
 	var brickGeometry = new THREE.LegoBrick(brickVals);
 
 	var brickMaterial;
-	if(isOpaque) {
+	if(isTransparent) {
 		brickMaterial = new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:true, opacity:.5})
 	} else {
 		brickMaterial = new THREE.MeshPhongMaterial({color: effectController.brickColor, transparent:false })
