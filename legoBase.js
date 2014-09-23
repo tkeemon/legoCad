@@ -135,7 +135,9 @@ function deleteFromBrickMap(num) {
 	}
 }
 
-function deleteBrickAt(xLoc, yLoc, zLoc) {
+function deleteFromBrickMapAt(xLoc, yLoc, zLoc) {
+
+
 	var num = brickMap[xLoc][yLoc][zLoc];
 	if(num > 0) {
 		deleteFromBrickMap(num);
@@ -206,7 +208,17 @@ function addBrickToScene(locX, locY, isTemp, isTransparent) {
 	}
 }
 
-function removeBrickFromScene() {
+function removeBrickFromScene(brick) {
+	scene.remove(brick);
+
+	var pos = brick.position;
+	var x = Math.round(pos.x/8);
+	var y = Math.round(pos.y/8);
+	var z = Math.round(pos.z/3.2);
+	console.log(x);
+	console.log(y);
+	console.log(z);
+	deleteFromBrickMapAt(x,y,z);
 
 }
 
@@ -764,8 +776,7 @@ function setupGui() {
 		deleteSelectedBrick: function() {
 			for(var x=0; x<selectedBricks.length; x++) {
 				var b = selectedBricks[x];
-				console.log(b);
-				scene.remove(b);
+				removeBrickFromScene(b);
 			}
 		},
 		plusXPosition: function(){moveSelectedBrick(1,0,0);},
