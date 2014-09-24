@@ -215,11 +215,14 @@ function removeBrickFromScene(brick) {
 	var x = Math.round(pos.x/8);
 	var y = Math.round(pos.y/8);
 	var z = Math.round(pos.z/3.2);
-	console.log(x);
-	console.log(y);
-	console.log(z);
 	deleteFromBrickMapAt(x,y,z);
 
+	//remove from bricks[]
+	for(var i=0; i<bricks.length; i++) {
+		if(bricks[i] == brick) {
+			bricks[i] = undefined;
+		}
+	}
 }
 
 
