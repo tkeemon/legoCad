@@ -220,7 +220,7 @@ function removeBrickFromScene(brick) {
 	//remove from bricks[]
 	for(var i=0; i<bricks.length; i++) {
 		if(bricks[i] == brick) {
-			bricks[i] = undefined;
+			bricks.splice(i,1);
 		}
 	}
 }
