@@ -48,7 +48,6 @@ function init() {
 		viewSize / 2, -viewSize / 2,
 		-10000, 10000 );
 
-	// camera.position.set(-450,-1000,350);
 	camera.position.set(40,-10,30);
 	camera.up.set(0,0,1);
 	// CONTROLS
@@ -90,7 +89,7 @@ function fillScene() {
 
 	///////////////////////
 	// GROUND
-	//var groundPlane = new LegoBrick(20,20,true);
+	//
 	var groundPlaneGeometry = new THREE.LegoBrick({unitsLength:groundPlaneSize,unitsWidth:groundPlaneSize,isThinPiece:true });
 
 	groundPlane = new THREE.Mesh(groundPlaneGeometry,
@@ -661,6 +660,8 @@ function clearBricks() {
 	//clear then reinit brickMap
 	brickMap = [];
 	initBrickMap();
+
+	selectedBricks = [];
 }
 
 function setAllBrickOpacity(val) {
@@ -673,13 +674,6 @@ function setAllBrickOpacity(val) {
 	}
 }
 
-/*
-function mouseUpPlaceBrick( event_info ) {
-	if(!effectController.rotateCamera) {
-			event_info.preventDefault();
-		}    
-}
-*/
 function animate() {
 	window.requestAnimationFrame(animate);
 	render();
@@ -692,7 +686,6 @@ function render() {
 	//calculate view size based on camera distance from target
 	var diff = new THREE.Vector3().subVectors(camera.position,cameraControls.target);
 	var dist = Math.sqrt(diff.x*diff.x + diff.y*diff.y + diff.z*diff.z);
-	// console.log(dist);
 	viewSize = dist;
 
 	camera.left = -aspectRatio*viewSize / 2;
@@ -774,8 +767,6 @@ function setupGui() {
 		explodeYDist:0,
 		explodeZDist:0,
 
-		//TODO update brickMap
-		//TODO remove from 'bricks' array
 		deleteSelectedBrick: function() {
 			for(var x=0; x<selectedBricks.length; x++) {
 				var b = selectedBricks[x];
@@ -793,9 +784,8 @@ function setupGui() {
 		saveLabel:'',
 		saveData:function() {
 			var jsonStr = JSON.stringify(exportToJson());
-			//console.log(jsonStr);
 			effectController.saveLabel = jsonStr;
-			//is it ok to use 'saveText' handle before it's defined
+
 			saveText.updateDisplay();
 		},
 
@@ -818,6 +808,11 @@ function setupGui() {
 	var mouseControlHandle = f.add(effectController,"mouseState",
 				["Place Brick","Select Brick","Rotate Camera", "Set Ground Plane Height"]).name("Mouse State");
 
+	//TODO - camera menu
+	//set parameters
+	//button for default
+	//button to set mouse state to move camera
+
 	f = gui.addFolder("Ground Plane");
 	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height").listen();
 	var gpv = f.add(effectController,"groundPlaneVisible").name("Visible?");
@@ -829,8 +824,8 @@ function setupGui() {
 	var wireFrameHandle = f.add(effectController,"wireframeAllBricks").name("Wireframe?");
 	var backgroundColorHandle = f.addColor(effectController,"backgroundColor").name("Background Color");
 
+	//TODO - button to set mouse state to place brick
 	f = gui.addFolder("Brick Placement");
-	// var placeBrickHandle = f.add(effectController,"placeBrick").name("Place Brick");
 	var lengthHandle = f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
 	var widthHandle = f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
 	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
@@ -838,7 +833,7 @@ function setupGui() {
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
 
-	//TODO - delete brick
+	//TODO - button to set mouse to select brick state
 	f = gui.addFolder("Edit Brick");
 	f.add(effectController,"deleteSelectedBrick").name("Delete brick(s)");
 	var plusXPositionHandle = f.add(effectController,"plusXPosition").name("+X");
