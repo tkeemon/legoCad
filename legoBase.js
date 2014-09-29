@@ -767,6 +767,12 @@ function setupGui() {
 		explodeYDist:0,
 		explodeZDist:0,
 
+		mouseSelectBrickButton: function() {
+			//TODO - call mouseControlHandle instead of replicating functionality
+			effectController.mouseState = 'Select Brick';
+			cameraControls.enabled = false;
+			setAllBrickOpacity(.5);
+		},
 		deleteSelectedBrick: function() {
 			for(var x=0; x<selectedBricks.length; x++) {
 				var b = selectedBricks[x];
@@ -806,7 +812,7 @@ function setupGui() {
 	var gui = new dat.GUI();
 	f = gui.addFolder("Mouse Control");
 	var mouseControlHandle = f.add(effectController,"mouseState",
-				["Place Brick","Select Brick","Rotate Camera", "Set Ground Plane Height"]).name("Mouse State");
+				["Place Brick","Select Brick","Rotate Camera", "Set Ground Plane Height"]).name("Mouse State").listen();
 
 	//TODO - camera menu
 	//set parameters
@@ -835,6 +841,7 @@ function setupGui() {
 
 	//TODO - button to set mouse to select brick state
 	f = gui.addFolder("Edit Brick");
+	f.add(effectController,'mouseSelectBrickButton').name('Select Brick');
 	f.add(effectController,"deleteSelectedBrick").name("Delete brick(s)");
 	var plusXPositionHandle = f.add(effectController,"plusXPosition").name("+X");
 	var minusXPositionHandle = f.add(effectController,"minusXPosition").name("-X");
