@@ -757,6 +757,12 @@ function setupGui() {
 		brickSizeX:1,
 		brickSizeY:1,
 
+		mousePlaceBrickButton: function() {
+			//TODO - call mouseControlHandle instead of replicating functionality
+			effectController.mouseState = 'Place Brick';
+			cameraControls.enabled = false;
+			setAllBrickOpacity(1);
+		},
 		brickThin:false,
 		brickSmooth:false,
 		brickColor:0x0000FF,
@@ -832,6 +838,7 @@ function setupGui() {
 
 	//TODO - button to set mouse state to place brick
 	f = gui.addFolder("Brick Placement");
+	f.add(effectController,'mousePlaceBrickButton').name('Place Brick');
 	var lengthHandle = f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
 	var widthHandle = f.add(effectController,"brickSizeY",1,10).step(1).name("Width");
 	var rotateHandle = f.add(effectController,'brickRotation',0,270).step(90).name("Rotation (deg)");
