@@ -741,9 +741,20 @@ function rotateSelectedBrick(deg) {
 }
 
 function setupGui() {
+	var camX = Math.round(camera.position.x);
+	var camY = Math.round(camera.position.y);
+	var camZ = Math.round(camera.position.z);
 
 	effectController = {
 		mouseState:"Place Brick",
+
+		mouseSelectMoveCamera: function() {
+			//TODO - call mouseControlHandle instead of replicating functionality
+			effectController.mouseState = 'Rotate Camera';
+			cameraControls.enabled = true;
+			setAllBrickOpacity(1);
+		},
+		cameraPosition:camX + ', ' + camY + ', ' + camZ,
 
 		groundPlaneHeight:0,
 		groundPlaneVisible:true,
@@ -824,6 +835,9 @@ function setupGui() {
 	//set parameters
 	//button for default
 	//button to set mouse state to move camera
+	f = gui.addFolder("Camera");
+	f.add(effectController,'mouseSelectMoveCamera').name("Move Camera");
+	f.add(effectController,"cameraPosition").name("Camera Position").listen();
 
 	f = gui.addFolder("Ground Plane");
 	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height").listen();
@@ -836,7 +850,6 @@ function setupGui() {
 	var wireFrameHandle = f.add(effectController,"wireframeAllBricks").name("Wireframe?");
 	var backgroundColorHandle = f.addColor(effectController,"backgroundColor").name("Background Color");
 
-	//TODO - button to set mouse state to place brick
 	f = gui.addFolder("Brick Placement");
 	f.add(effectController,'mousePlaceBrickButton').name('Place Brick');
 	var lengthHandle = f.add(effectController,"brickSizeX",1,10).step(1).name("Length");
@@ -846,7 +859,6 @@ function setupGui() {
 	f.add(effectController,"brickSmooth").name("Smooth top?");
 	f.addColor(effectController,"brickColor").name("Color");
 
-	//TODO - button to set mouse to select brick state
 	f = gui.addFolder("Edit Brick");
 	f.add(effectController,'mouseSelectBrickButton').name('Select Brick');
 	f.add(effectController,"deleteSelectedBrick").name("Delete brick(s)");
