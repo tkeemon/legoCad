@@ -741,10 +741,6 @@ function rotateSelectedBrick(deg) {
 }
 
 function setupGui() {
-	var camX = Math.round(camera.position.x);
-	var camY = Math.round(camera.position.y);
-	var camZ = Math.round(camera.position.z);
-
 	effectController = {
 		mouseState:"Place Brick",
 
@@ -754,7 +750,7 @@ function setupGui() {
 			cameraControls.enabled = true;
 			setAllBrickOpacity(1);
 		},
-		cameraPosition:camX + ', ' + camY + ', ' + camZ,
+		cameraPosition: sprintf('%.2f, %.2f, %.2f',camera.position.x,camera.position.y,camera.position.z),
 
 		groundPlaneHeight:0,
 		groundPlaneVisible:true,
