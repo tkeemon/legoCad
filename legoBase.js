@@ -751,6 +751,7 @@ function setupGui() {
 			setAllBrickOpacity(1);
 		},
 		cameraPosition: sprintf('%.2f, %.2f, %.2f',camera.position.x,camera.position.y,camera.position.z),
+		cameraTarget: sprintf('%.2f, %.2f, %.2f',cameraControls.target.x,cameraControls.target.y,cameraControls.target.z),
 
 		groundPlaneHeight:0,
 		groundPlaneVisible:true,
@@ -834,6 +835,7 @@ function setupGui() {
 	f = gui.addFolder("Camera");
 	f.add(effectController,'mouseSelectMoveCamera').name("Move Camera");
 	f.add(effectController,"cameraPosition").name("Camera Position").listen();
+	f.add(effectController,'cameraTarget').name("Camera Target");
 
 	f = gui.addFolder("Ground Plane");
 	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height").listen();
