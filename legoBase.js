@@ -838,7 +838,7 @@ function setupGui() {
 	//button to set mouse state to move camera
 	f = gui.addFolder("Camera");
 	f.add(effectController,'mouseSelectMoveCamera').name("Move Camera");
-	f.add(effectController,"cameraPosition").name("Camera Position").listen();
+	var cameraPositionHandle = f.add(effectController,"cameraPosition").name("Camera Position").listen();
 	f.add(effectController,'cameraTarget').name("Camera Target").listen();
 
 	f = gui.addFolder("Ground Plane");
@@ -906,6 +906,15 @@ function setupGui() {
 			setAllBrickOpacity(1);
 
 		}
+	});
+
+	cameraPositionHandle.onChange(function(value) {
+		var sp = value.split(',');
+		var x = parseFloat(sp[0]);
+		var y = parseFloat(sp[1]);
+		var z = parseFloat(sp[2]);
+
+		camera.position.set(x,y,z);
 	});
 
 	//ground plane vis controls
