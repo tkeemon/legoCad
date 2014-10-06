@@ -839,7 +839,7 @@ function setupGui() {
 	f = gui.addFolder("Camera");
 	f.add(effectController,'mouseSelectMoveCamera').name("Move Camera");
 	var cameraPositionHandle = f.add(effectController,"cameraPosition").name("Camera Position").listen();
-	f.add(effectController,'cameraTarget').name("Camera Target").listen();
+	var cameraTargetHandle = f.add(effectController,'cameraTarget').name("Camera Target").listen();
 
 	f = gui.addFolder("Ground Plane");
 	var gpHeight = f.add(effectController,"groundPlaneHeight",0,30).step(1).name("Height").listen();
@@ -915,6 +915,15 @@ function setupGui() {
 		var z = parseFloat(sp[2]);
 
 		camera.position.set(x,y,z);
+	});
+
+	cameraTargetHandle.onChange(function(value) {
+		var sp = value.split(',');
+		var x = parseFloat(sp[0]);
+		var y = parseFloat(sp[1]);
+		var z = parseFloat(sp[2]);
+
+		cameraControls.target = new THREE.Vector3(x,y,z);
 	});
 
 	//ground plane vis controls
