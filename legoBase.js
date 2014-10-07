@@ -754,6 +754,7 @@ function setupGui() {
 			cameraControls.enabled = true;
 			setAllBrickOpacity(1);
 		},
+		cameraType:'Orthographic',
 		cameraPosition: sprintf('%.2f, %.2f, %.2f',camera.position.x,camera.position.y,camera.position.z),
 		cameraTarget: sprintf('%.2f, %.2f, %.2f',cameraControls.target.x,cameraControls.target.y,cameraControls.target.z),
 
@@ -832,12 +833,9 @@ function setupGui() {
 	var mouseControlHandle = f.add(effectController,"mouseState",
 				["Place Brick","Select Brick","Rotate Camera", "Set Ground Plane Height"]).name("Mouse State").listen();
 
-	//TODO - camera menu
-	//set parameters
-	//button for default
-	//button to set mouse state to move camera
 	f = gui.addFolder("Camera");
 	f.add(effectController,'mouseSelectMoveCamera').name("Move Camera");
+	var cameraTypeHandle = f.add(effectController,'cameraType',['Orthographic','Perspective']).name('Camera Type').listen();
 	var cameraPositionHandle = f.add(effectController,"cameraPosition").name("Camera Position").listen();
 	var cameraTargetHandle = f.add(effectController,'cameraTarget').name("Camera Target").listen();
 
@@ -906,6 +904,10 @@ function setupGui() {
 			setAllBrickOpacity(1);
 
 		}
+	});
+
+	cameraTypeHandle.onChange(function(value) {
+		//TODO
 	});
 
 	cameraPositionHandle.onChange(function(value) {
