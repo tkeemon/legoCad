@@ -907,7 +907,26 @@ function setupGui() {
 	});
 
 	cameraTypeHandle.onChange(function(value) {
-		//TODO
+		var position = camera.position;
+		var up = camera.up;
+		var target = cameraControls.target;
+
+		//TODO figure out why changing camera messes with mouse controls for camera rotation
+		if(value == 'Orthographic') {
+			camera = new THREE.OrthographicCamera(
+				-aspectRatio*viewSize / 2, aspectRatio*viewSize / 2,
+				viewSize / 2, -viewSize / 2,
+				-10000, 10000 );
+		}else if(value == 'Perspective') {
+			camera = new THREE.PerspectiveCamera(
+				45, aspectRatio, -10000, 10000);
+		}
+
+		cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
+		camera.position.copy(position);
+		camera.up.copy(up);
+		cameraControls.target.copy(target);
+
 	});
 
 	cameraPositionHandle.onChange(function(value) {
