@@ -922,9 +922,9 @@ function setupGui() {
 				45, aspectRatio, -10000, 10000);
 		}
 
-		cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
 		camera.position.copy(position);
 		camera.up.copy(up);
+		cameraControls = new THREE.OrbitControls(camera,renderer.domElement);
 		cameraControls.target.copy(target);
 
 	});
