@@ -835,7 +835,7 @@ function setupGui() {
 
 	f = gui.addFolder("Camera");
 	f.add(effectController,'mouseSelectMoveCamera').name("Move Camera");
-	var cameraTypeHandle = f.add(effectController,'cameraType',['Orthographic','Perspective']).name('Camera Type').listen();
+	var cameraTypeHandle = f.add(effectController,'cameraType',['Orthographic','Perspective']).name('Camera Type');
 	var cameraPositionHandle = f.add(effectController,"cameraPosition").name("Camera Position").listen();
 	var cameraTargetHandle = f.add(effectController,'cameraTarget').name("Camera Target").listen();
 
@@ -911,7 +911,6 @@ function setupGui() {
 		var up = camera.up;
 		var target = cameraControls.target;
 
-		//TODO figure out why changing camera messes with mouse controls for camera rotation
 		if(value == 'Orthographic') {
 			camera = new THREE.OrthographicCamera(
 				-aspectRatio*viewSize / 2, aspectRatio*viewSize / 2,
